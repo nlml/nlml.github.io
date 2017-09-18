@@ -326,8 +326,8 @@ def estimate_sne(X, y, P, rng, num_iters, q_fn, grad_fn,
 
         # Plot sometimes
         if plot and i % (num_iters / plot) == 0:
-            categorical_scatter_2d(Y, y, alpha=1.0, ms=6, show=True,
-                                   figsize=(9, 6))
+            categorical_scatter_2d(Y, y, alpha=1.0, ms=6,
+                                   show=True, figsize=(9, 6))
 
     return Y
 {% endhighlight %}
@@ -471,6 +471,12 @@ This looks a little better than the Symmetric SNE result above. When we scale up
 ![t-SNE fit to five digits from the MNIST dataset](/images/tsne/tsne-2.png)
 *t-SNE representation of the first 500 0's, 1's, 4's, 7's and 8's in the MNIST dataset after 500 iterations.*
 
-The results look a bit lacklustre as, for simplicity, I've omitted a number of optimisation details from the original t-SNE paper.
+It looks like the Symmetric SNE has had a harder time separating 4's from 7's than the t-SNE approach, in this case.
 
-Thanks for reading! I hope this code and exercise has helped you to better understand t-SNE.
+## Final thoughts
+
+Overall, the results look a tad lacklustre as, for simplicity, I've omitted a number of optimisation details from the original t-SNE paper.
+
+Still, this exercise really helped me to properly understand how t-SNE works. I hope it had a similar effect for you.
+
+Thanks for reading!

@@ -16,7 +16,7 @@ description              : "nlml: thoughts on machine learning from the netherla
 url                      : "https://nlml.github.io"
 baseurl                  : ""
 repository               : "nlml/nlml.github.io"
-teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
+teaser                   : "images/nlml.png"
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
 comments:
@@ -255,8 +255,7 @@ defaults:
       comments: # true
       share: true
       related: true
-    header:
-      image: images/val_spect_pred.png
+    image: images/val_spect_pred.png
 
 comments:
   provider: "disqus"

@@ -255,6 +255,8 @@ defaults:
       comments: # true
       share: true
       related: true
+    header:
+      image: images/val_spect_pred.png
 
 comments:
   provider: "disqus"

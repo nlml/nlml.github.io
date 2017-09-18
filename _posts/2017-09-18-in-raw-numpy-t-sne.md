@@ -4,6 +4,9 @@ category : "in-raw-numpy"
 tagline: "Dimensionality reduction for data visualisation with t-SNE. In raw numpy."
 tags : [in-raw-numpy, python, numpy, dimensionality-reduction, t-sne]
 author: Liam Schoneveld
+header.image: images/nlml.png
+header: images/nlml.png
+image: images/nlml.png
 ---
 
 This is the first post in the *In Raw Numpy* series. This series is an attempt to provide readers (and myself) with an understanding of some of the most frequently-used machine learning methods by going through the math and intuition, and implementing it using just python and numpy.

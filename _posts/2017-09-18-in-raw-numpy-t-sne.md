@@ -25,7 +25,7 @@ From here on, this article is focused on the implementation of t-SNE. If you wan
 
 *t-distributed Stochastic Neighbor Embedding*, or t-SNE, was developed by Geoffrey Hinton and Laurens van der Maaten. Their [paper introducing t-SNE](http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf) is very clear and easy to follow, and I more or less follow it in this post.
 
-As suggested by the acronym, most of t-SNE is SNE, or the *Stochastic Neighbor Embedding* algorithm. We thus cover this first.
+As suggested by the acronym, most of t-SNE is SNE, or the *Stochastic Neighbor Embedding* algorithm. We cover this first.
 
 ### SNE: setup and overall goal
 
@@ -59,7 +59,7 @@ $$
 C = \sum_i KL(P_i || Q_i) = \sum_i \sum_j p_{j|i} \log \frac {p_{j|i}} {q_{j|i}}
 $$
 
-We want to minimise this cost. Since we're going to use gradient descent, we're only really interested in its gradient. But more on that later.
+We want to minimise this cost. Since we're going to use gradient descent, we're only really interested in its gradient with respect to our 2D representation \\(\mathbf{Y}\\). But more on that later.
 
 ### Euclidean distances matrix in numpy
 
@@ -88,7 +88,7 @@ This function uses a bit of linear algebra magic for efficiency, but it returns 
 As someone who uses neural networks a lot, when I see \\(  \\exp(\\cdot) \big / \\sum \\exp(\\cdot) \\) like in [\\((1)\\)](#eq1), I think softmax. Here is the softmax function we will use:
 {% highlight python %}
 def softmax(X, diag_zero=True):
-    """Compute softmax values for each row of matrix X."""
+    """Take softmax of each row of matrix X."""
 
     # Subtract max for numerical stability
     e_x = np.exp(X - np.max(X, axis=1).reshape([-1, 1]))
@@ -103,7 +103,7 @@ def softmax(X, diag_zero=True):
     return e_x / e_x.sum(axis=1).reshape([-1, 1])
 {% endhighlight %}
 
-Note that we have taken care of the need for \\(  p_{i\|i} = 0 \\) by replacing the diagonal entries of the exponentiated negative distances matrix with zeros.
+Note that we have taken care of the need for \\(  p_{i\|i} = 0 \\) by replacing the diagonal entries of the exponentiated negative distances matrix with zeros (using `np.fill_diagonal`).
 
 Putting these two functions together we can make a function that gives us a matrix \\(P\\), whose \\((i,j)\\)'th entry is \\(  p_{j\|i} \\) as defined in [\\((1)\\)](#eq1):
 
@@ -135,9 +135,9 @@ In SNE (and t-SNE) perplexity is a *parameter* that we set (usually between 5 an
 
 Let's intuit about this for a moment. If a probability distribution has high entropy, it means that it is relatively flat -- that is, the probabilities of most of the elements in the distribution are around the same.
 
-This means that if we set a higher perplexity, we want all of the \\(p_{j\|i}\\) (for a given \\(i\\)) to be more similar to each other. In other words, we want the probability distribution \\(P_i\\) to be flatter, or less *spiky*. We can achieve this by increasing \\(\sigma_i\\) -- this acts just like the [temperature parameter sometimes used in the softmax function](https://en.wikipedia.org/wiki/Softmax_function#Reinforcement_learning). The larger the \\(\sigma_i\\) we divide by, the closer the probability distribution gets to having all probabilities equal to \\(1/N\\).
+Perplexity increases with entropy. Thus, if we desire higher perplexity, we want all of the \\(p_{j\|i}\\) (for a given \\(i\\)) to be more similar to each other. In other words, we want the probability distribution \\(P_i\\) to be flatter. We can achieve this by increasing \\(\sigma_i\\) -- this acts just like the [temperature parameter sometimes used in the softmax function](https://en.wikipedia.org/wiki/Softmax_function#Reinforcement_learning). The larger the \\(\sigma_i\\) we divide by, the closer the probability distribution gets to having all probabilities equal to just \\(1/N\\).
 
-So, if we want higher perplexity it means we are going to set our \\(\sigma_i\\)'s to be larger, which will cause the probability distributions to become flatter. This will essentially increase the number of neighbours each point has (if we define neighbours as points \\(x_j\\) where \\(p_{j\|i}\\) is below a certain probability threshold). This is why you may hear people relating the perplexity parameter to the number of neighbours we think each point should have.
+So, if we want higher perplexity it means we are going to set our \\(\sigma_i\\)'s to be larger, which will cause the conditional probability distributions to become flatter. This essentially increases the number of neighbours each point has (if we define \\(x_i\\) and \\(x_j\\) as neighbours if \\(p_{j\|i}\\) is below a certain probability threshold). This is why you may hear people roughly equating the perplexity parameter to the number of neighbours we believe each point has.
 
 ### Finding the \\(\\sigma_i\\)'s
 
@@ -176,7 +176,7 @@ def binary_search(eval_fn, target, tol=1e-10, max_iter=10000,
 
 To find our \\(\\sigma_i\\), we need to pass an `eval_fn` to this `binary_search` function that takes a given \\(\\sigma_i\\) as its argument and returns the perplexity of \\(P_i\\) with that \\(\\sigma_i\\). 
 
-The `find_optimal_sigmas` function below does exactly this to find all \\(\\sigma_i\\)'s. It takes a matrix of negative euclidean distances and a target perplexity. For each row of the distances matrix, it then performs a binary search over possible values of sigma until such results in the target perplexity. It then returns a numpy vector containing the optimal \\(\\sigma_i\\)'s that were found.
+The `find_optimal_sigmas` function below does exactly this to find all \\(\\sigma_i\\)'s. It takes a matrix of negative euclidean distances and a target perplexity. For each row of the distances matrix, it performs a binary search over possible values of \\(\\sigma_i\\) until finding that which results in the target perplexity. It then returns a numpy vector containing the optimal \\(\\sigma_i\\)'s that were found.
 
 {% highlight python %}
 def calc_perplexity(prob_matrix):
@@ -228,7 +228,7 @@ This is just like the softmax we had before, except now the normalising term in 
 To avoid problems related to outlier \\(x\\) points, rather than using an analogous distribution for \\(p_{ij}\\), we simply set \\(p_{ij} = \frac{p_{i\|j} + p_{j\|i}}{2N}\\).
 
 We can easily obtain these newly-defined joint \\(p\\) and \\(q\\) distributions in python:
-- the joint \\(p\\) is just \\( \\frac \{P + P^T\} \{2N \} \\)
+- the joint \\(p\\) is just \\( \\frac \{P + P^T\} \{2N \} \\), where \\(P\\) is the conditional probabilities matrix with \\((i,j)\\)'th entry \\(p_{j\|i}\\)
 - to estimate the joint \\(q\\) we can calculate the negative squared euclidian distances matrix from \\(\\mathbf{Y}\\), exponentiate it, then divide all entries by the total sum.
 
 {% highlight python %}
@@ -245,10 +245,32 @@ def q_joint(Y):
     return exp_distances / np.sum(exp_distances), None
 
 
-def p_joint(P):
+def p_conditional_to_joint(P):
     """Given conditional probabilities matrix P, return
     approximation of joint distribution probabilities."""
     return (P + P.T) / (2. * P.shape[0])
+{% endhighlight %}
+
+Let's also define a `p_joint` function that takes our data matrix \\(\\textbf{X}\\) and returns the matrix of joint probabilities \\(P\\), estimating the required \\(\\sigma_i\\)'s and conditional probabilities matrix along the way:
+
+{% highlight python %}
+def p_joint(X, target_perplexity):
+    """Given a data matrix X, gives joint probabilities matrix.
+
+    # Arguments
+        X: Input data matrix.
+    # Returns:
+        P: Matrix with entries p_ij = joint probabilities.
+    """
+    # Get the negative euclidian distances matrix for our data
+    distances = neg_squared_euc_dists(X)
+    # Find optimal sigma for each row of this distances matrix
+    sigmas = find_optimal_sigmas(distances, target_perplexity)
+    # Calculate the probabilities based on these optimal sigmas
+    p_conditional = calc_prob_matrix(distances, sigmas)
+    # Go from conditional to joint probabilities matrix
+    P = p_conditional_to_joint(p_conditional)
+    return P
 {% endhighlight %}
 
 So we have our joint distributions \\(p\\) and \\(q\\). If we calculate these, then we can use the following gradient to update the \\(i\\)'th row of our low-dimensional representation \\(\\mathbf{Y}\\):
@@ -269,9 +291,9 @@ def symmetric_sne_grad(P, Q, Y, _):
     return grad
 {% endhighlight %}
 
-To vectorise things, there is a bit of `np.expand_dims` trickery here. You'll just have to trust me that `grad` is an \\(N\\)x\\(2\\) matrix whose \\(i\\)'th row is \\(\frac{\partial C}{\partial y_i}\\) (or check it yourself).
+To vectorise things, there is a bit of `np.expand_dims` trickery here. You'll just have to trust me that `grad` is an \\(N\\)x\\(2\\) matrix whose \\(i\\)'th row is \\(\frac{\partial C}{\partial y_i}\\) (or you can check it yourself).
 
-Once we have the gradients, since we are doing gradient descent we update \\(y_i\\) through the following update equation:
+Once we have the gradients, as we are doing gradient descent, we update \\(y_i\\) through the following update equation:
 
 $$
 y_i^{t} = y_i^{t-1} - \eta \frac{\partial C}{\partial y_i}
@@ -281,7 +303,7 @@ $$
 
 So now we have everything we need to estimate Symmetric SNE.
 
-Here's a training loop function that performs gradient descent:
+This training loop function will perform gradient descent:
 
 {% highlight python %}
 def estimate_sne(X, y, P, rng, num_iters, q_fn, grad_fn, 
@@ -357,7 +379,7 @@ def main():
                       N=NUM_POINTS)
 
     # Obtain matrix of joint probabilities p_ij
-    P = get_joint_p_matrix(X, PERPLEXITY)
+    P = p_joint(X, PERPLEXITY)
 
     # Fit SNE or t-SNE
     Y = estimate_sne(X, y, P, rng,
@@ -371,29 +393,7 @@ def main():
 
 You can find the `load_mnist` function in the [repo](https://github.com/nlml/tsne_raw), which will prepare the dataset as specified.
 
-The `get_joint_p_matrix` function takes our data matrix \\(\\textbf{X}\\) and returns the matrix of joint probabilities \\(P\\), estimating the required \\(\\sigma_i\\)'s and conditional probabilities matrix along the way:
-
-{% highlight python %}
-def get_joint_p_matrix(X, target_perplexity):
-    """Given a data matrix X, gives joint probabilities matrix.
-
-    # Arguments
-        X: Input data matrix.
-    # Returns:
-        P: Matrix with entries p_ij = joint probabilities.
-    """
-    # Get the negative euclidian distances matrix for our data
-    distances = neg_squared_euc_dists(X)
-    # Find optimal sigma for each row of this distances matrix
-    sigmas = find_optimal_sigmas(distances, target_perplexity)
-    # Calculate the probabilities based on these optimal sigmas
-    p_conditional = calc_prob_matrix(distances, sigmas)
-    # Go from conditional to joint probabilities matrix
-    P = p_joint(p_conditional)
-    return P
-{% endhighlight %}
-
-### Results
+### Symmetric SNE results
 
 Here's what the results look like after running Symmetric SNE for 500 iterations:
 
@@ -436,7 +436,9 @@ $$
 \frac{\partial C}{\partial y_i} = 4 \sum_j (p_{ij} - q_{ij}) (y_i - y_j) \left ( 1 + || y_i - y_j || ^2 \right ) ^ {-1}
 $$
 
-Basically, we have just multiplied the Symmetric SNE gradient by the `inv_distances` matrix we estimated above. Expanding on the Symmetric SNE gradient function, this is quite straightforward to implement:
+Basically, we have just multiplied the Symmetric SNE gradient by the `inv_distances` matrix we obtained halfway through the `q_tsne` function shown just above (this is why we also returned this matrix).
+
+We can easily implement this by just extending our earlier Symmetric SNE gradient function:
 
 {% highlight python %}
 def tsne_grad(P, Q, Y, inv_distances):
@@ -456,9 +458,11 @@ def tsne_grad(P, Q, Y, inv_distances):
     return grad
 {% endhighlight %}
 
-We saw in the call to `estimate_sne` in our `main()` function above that these two functions will be automatically passed to the training loop if `TSNE = True`. Hence we just need to set this flag if we want TSNE instead of Symmetric SNE. Easy!
+### Estimating t-SNE
 
-Setting this flag and running `main()` gives the following two-dimensional representation:
+We saw in the call to `estimate_sne` in our `main()` function above that these two functions (`q_tsne` and `tsne_grad`) will be automatically passed to the training loop if `TSNE = True`. Hence we just need to set this flag if we want TSNE instead of Symmetric SNE. Easy!
+
+Setting this flag and running `main()` gives the following 2D representation:
 
 ![t-SNE fit to two digits from the MNIST dataset](/images/tsne/tsne.png)
 *t-SNE representation of the first 200 0's, 1's and 8's in the MNIST dataset after 500 iterations.*

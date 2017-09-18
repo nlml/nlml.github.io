@@ -89,7 +89,7 @@ analytics :
 # Site Author
 author:
   name             : "liam schoneveld"
-  avatar           : "images/nlml.png"#bio-photo.jpg"
+  avatar           : "images/bio-photo.jpg"
   bio              : "thoughts on machine learning from the netherlands"
   location         : "Amsterdam"
   email            :

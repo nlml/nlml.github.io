@@ -7,9 +7,9 @@ image: bio-photo.jpg
 ---
 
 {% if page.image %}
-<meta content="{{ page.image }}" property="og:image">
+<meta content="https://nlml.github.io/{{ page.image }}" property="og:image">
 {% else %}
-<meta content="../images/nlml.png" property="og:image">
+<meta content="https://nlml.github.io/images/nlml.png" property="og:image">
 {% endif %}
 
 {% include group-by-array collection=site.posts field="categories" %}

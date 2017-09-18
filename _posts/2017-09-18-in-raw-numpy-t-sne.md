@@ -480,7 +480,7 @@ It looks like the Symmetric SNE has had a harder time separating 4's from 7's th
 
 ## Final thoughts
 
-Overall, the results look a tad lacklustre as, for simplicity, I've omitted a number of optimisation details from the original t-SNE paper (plus I used only 500 data points and barely tuned the hyperparams).
+Overall, the results look a tad lacklustre as, for simplicity, I've omitted a number of optimisation details from the original t-SNE paper (plus I used only 500 data points and barely tuned the hyperparameters).
 
 Still, this exercise really helped me to properly understand how t-SNE works. I hope it had a similar effect for you.
 

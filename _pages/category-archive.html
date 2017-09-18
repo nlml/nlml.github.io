@@ -3,13 +3,13 @@ layout: archive
 permalink: /categories/
 title: "Posts by Category"
 author_profile: true
-image: bio-photo.jpg
+image: images/nlml.png
 ---
 
 {% if page.image %}
-<meta content="https://nlml.github.io/{{ page.image }}" property="og:image">
+<meta content="http://nlml.github.io/{{ page.image }}" property="og:image">
 {% else %}
-<meta content="https://nlml.github.io/images/nlml.png" property="og:image">
+<meta content="http://nlml.github.io/images/nlml.png" property="og:image">
 {% endif %}
 
 {% include group-by-array collection=site.posts field="categories" %}

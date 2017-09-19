@@ -151,7 +151,8 @@ class SemisupModel(object):
           activation_fn=None,
           weights_regularizer=slim.l2_regularizer(1e-4))
 
-  def add_semisup_loss(self, a, b, labels, walker_weight=1.0, visit_weight=1.0):
+  def add_semisup_loss(self, a, b, labels, walker_weight=1.0, visit_weight=1.0,
+                       gamma=0.0, halfway_mode=True):
     """Add semi-supervised classification loss to the model.
 
     The loss constist of two terms: "walker" and "visit".
@@ -163,40 +164,53 @@ class SemisupModel(object):
       walker_weight: Weight coefficient of the "walker" loss.
       visit_weight: Weight coefficient of the "visit" loss.
     """
-
+    
     equality_matrix = tf.equal(tf.reshape(labels, [-1, 1]), labels)
     equality_matrix = tf.cast(equality_matrix, tf.float32)
     p_target = (equality_matrix / tf.reduce_sum(
         equality_matrix, [1], keep_dims=True))
+    
+    print ('gamma = ' + str(gamma))
 
     match_ab = tf.matmul(a, b, transpose_b=True, name='match_ab')
     # ab is prob from labeled to u
     p_ab = tf.nn.softmax(match_ab, name='p_ab') # N * M
-    # from u to lab
-    match_ba = tf.transpose(match_ab) # M * N
-    
-    match_bb = tf.matmul(b, b, transpose_b=True, name='match_bb') # M * M
-    
-    match_ab_bb = tf.concat([match_ba,# M * N
-                             match_bb], # M * M
-                            axis=1) # M * (M+N)
-    p_ba_bb = tf.nn.softmax(match_ab_bb, name='p_ba_bb')
-    N = tf.shape(a)[0]
-    M = tf.shape(b)[0]
-    Tbar_ul, Tbar_uu = tf.split(p_ba_bb, [N, M], 1)
-    
-    middle = tf.matrix_inverse(tf.eye(M) - Tbar_uu)
-    p_aba_new = tf.matmul(tf.matmul(p_ab, middle), Tbar_ul)
+    if halfway_mode:
+        gamma = 1.5
+        print ('inf_mode halfway_mode!')
 
-    
-    # Old version
-    p_ba = tf.nn.softmax(tf.transpose(match_ab), name='p_ba')
-    p_aba_old = tf.matmul(p_ab, p_ba, name='p_aba')
+    if gamma > 0.:
+        print ('inf_mode!')
+        # from u to lab
+        match_ba = tf.transpose(match_ab) # M * N
+        
+        match_bb = tf.matmul(b, b, transpose_b=True, name='match_bb') # M * M
+        
+        add = tf.log(gamma + 1e-10) if gamma < 1. else 0.
+        
+        match_ab_bb = tf.concat([match_ba,# M * N
+                                 match_bb + add], # M * M
+                                axis=1) # M * (M+N)
+        p_ba_bb = tf.nn.softmax(match_ab_bb / 100., name='p_ba_bb')
+        N = tf.shape(a)[0]
+        M = tf.shape(b)[0]
+        Tbar_ul, Tbar_uu = tf.split(p_ba_bb, [N, M], 1)
 
-    # Average
-    p_aba = 0.5 * (p_aba_new + p_aba_old)
+        middle = tf.matrix_inverse(tf.eye(M) - Tbar_uu + 1e-8)
 
-    self.create_walk_statistics(p_aba, equality_matrix)
+        p_aba_new = tf.matmul(tf.matmul(p_ab, middle), Tbar_ul)
+    if gamma <= 0. or halfway_mode:
+        p_ba = tf.nn.softmax(tf.transpose(match_ab), name='p_ba')
+        p_aba_old = tf.matmul(p_ab, p_ba, name='p_aba')
+
+    if halfway_mode:
+      p_aba = 0.5 * (p_aba_new + p_aba_old)
+    elif gamma:
+      p_aba = p_aba_new
+    else:
+      p_aba = p_aba_old
+
+    #self.create_walk_statistics(p_aba, equality_matrix)
     
     loss_aba = tf.losses.softmax_cross_entropy(
         p_target,

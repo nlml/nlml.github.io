@@ -307,8 +307,10 @@ So now we have everything we need to estimate Symmetric SNE.
 This training loop function will perform gradient descent:
 
 {% highlight python %}
-def estimate_sne(X, y, P, rng, num_iters, q_fn, grad_fn, 
-                 learning_rate, momentum, plot):
+
+
+def estimate_sne(X, y, P, rng, num_iters, q_fn, grad_fn, learning_rate,
+                 momentum, plot):
     """Estimates a SNE model.
 
     # Arguments
@@ -344,8 +346,8 @@ def estimate_sne(X, y, P, rng, num_iters, q_fn, grad_fn,
         if momentum:  # Add momentum
             Y += momentum * (Y_m1 - Y_m2)
             # Update previous Y's for momentum
-            Y_m1 = Y.copy()
             Y_m2 = Y_m1.copy()
+            Y_m1 = Y.copy()
 
         # Plot sometimes
         if plot and i % (num_iters / plot) == 0:

@@ -478,7 +478,7 @@ This looks a little better than the Symmetric SNE result above. When we scale up
 ![t-SNE fit to five digits from the MNIST dataset](/images/tsne/tsne-2.png)
 *t-SNE representation of the first 500 0's, 1's, 4's, 7's and 8's in the MNIST dataset after 500 iterations.*
 
-It looks like the Symmetric SNE has had a harder time separating 4's from 7's than the t-SNE approach, in this case.
+It looks like the Symmetric SNE has had a harder time disentagling the classes than t-SNE, in this case.
 
 ## Final thoughts
 

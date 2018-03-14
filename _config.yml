@@ -12,7 +12,7 @@ locale                   : "en-GB"
 title                    : "nlml"
 title_separator          : "-"
 name                     : "liam schoneveld"
-description              : "nlml: thoughts on machine learning from the netherlands"
+description              : "nlml: thoughts on machine learning"
 url                      : "https://nlml.github.io"
 baseurl                  : ""
 repository               : "nlml/nlml.github.io"
@@ -83,8 +83,8 @@ analytics :
 author:
   name             : "liam schoneveld"
   avatar           : "images/bio-photo.jpg"
-  bio              : "thoughts on machine learning from the netherlands"
-  location         : "Amsterdam"
+  bio              : "thoughts on machine learning"
+  location         : "Paris"
   email            :
   uri              :
   bitbucket        :

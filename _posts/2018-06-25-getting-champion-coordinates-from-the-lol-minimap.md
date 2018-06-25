@@ -7,7 +7,7 @@ author: Liam Schoneveld
 image: /images/lolmm/cover.png
 ---
 
-*Using a GAN and a ConvLSTM to go from minimap from to champion coordinates: This post was originally published on [Medium](https://medium.com/pandascore-stories/league-of-legends-getting-champion-coordinates-from-the-minimap-using-deep-learning-48a49d35bb74)*
+*Using a GAN and a ConvLSTM to go from minimap from to champion coordinates: This post was originally published on [Medium](https://medium.com/pandascore-stories/league-of-legends-getting-champion-coordinates-from-the-minimap-using-deep-learning-48a49d35bb74).*
 
 *At PandaScore, we built a model to track the positions of each champion in a League of Legends (LoL) game, based solely on /images of the minimap. In this more technical blog post, we describe how we achieved this.*
 

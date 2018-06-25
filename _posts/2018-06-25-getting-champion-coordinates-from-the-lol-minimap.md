@@ -9,7 +9,7 @@ image: /images/lolmm/cover.png
 
 *Using a GAN and a ConvLSTM to go from minimap from to champion coordinates: This post was originally published on [Medium](https://medium.com/pandascore-stories/league-of-legends-getting-champion-coordinates-from-the-minimap-using-deep-learning-48a49d35bb74).*
 
-*At PandaScore, we built a model to track the positions of each champion in a League of Legends (LoL) game, based solely on /images of the minimap. In this more technical blog post, we describe how we achieved this.*
+*At PandaScore, we built a model to track the positions of each champion in a League of Legends (LoL) game, based solely on images of the minimap. In this more technical blog post, we describe how we achieved this.*
 
 ## Background
 
@@ -27,7 +27,7 @@ Our customers expect the data we provide to be extremely accurate. Building a mo
 
 ## The Problem
 
-In the deep learning literature, the type of problem that involves looking at /images and locating or tracking objects in that image is generally referred to as *object detection*, or *tracking*.
+In the deep learning literature, the type of problem that involves looking at images and locating or tracking objects in that image is generally referred to as *object detection*, or *tracking*.
 
 On the surface, our particular minimap problem appears as though it could be easily solved with detection models such as [YOLO](https://arxiv.org/abs/1804.02767) or [SSD](https://arxiv.org/abs/1512.02325). We would just need to label a large dataset of minimap crops with the positions of each champion, and then pass this dataset to one of these algorithms.
 
@@ -41,7 +41,7 @@ We spent some weeks exploring a number of routes to resolving this issue. The ma
 
 1. **Train a model to detect the positions of *any* champion on the minimap, then feed the detected regions from this model to a classifier model covering all champions**: this approach showed some promise early on, but was ultimately deemed unworkable.
 
-1. **Train a model on the raw champion ‘portraits’ **— the raw portrait /images of each champion that the icons on the minimap are based on — then somehow **transfer this model to work in detecting the champions on real minimap frames**.
+1. **Train a model on the raw champion ‘portraits’ **— the raw portrait images of each champion that the icons on the minimap are based on — then somehow **transfer this model to work in detecting the champions on real minimap frames**.
 
 We ultimately went with approach 3, which we describe in more detail in the next section.
 
@@ -59,17 +59,17 @@ On the minimap, LoL champions appear with a blue or red circle around them. Ther
 
 ## Training the GAN
 
-Our particular use of GANs differs somewhat from the usual setup. We couldn’t just generate champion /images in the minimap environment directly, as if we did this, our model would only learn to generate the around 50 out of 140 champions that are present in our minimap frames dataset.
+Our particular use of GANs differs somewhat from the usual setup. We couldn’t just generate champion images in the minimap environment directly, as if we did this, our model would only learn to generate the around 50 out of 140 champions that are present in our minimap frames dataset.
 
 Rather, in our case we needed to **generate *masks* to add to raw champion portraits**. The discriminator of the GAN would thus see the raw champion portrait *plus* the mask, and the generator would have to learn to change these masks such that the *combination* looks real. This is illustrated in the diagram below.
 
 ![Diagram showing our GAN setup](/images/lolmm/gan2.png)
 
-As the generator’s adversary, the discriminator tries to distinguish between ‘real’ /images (crops of hero /images taken directly from minimap frames), and ‘fake’ /images (generated masks added to random hero portraits). After much tweaking effort and training time, we were able to train a mask-generating generator, which we put to use in the next section.
+As the generator’s adversary, the discriminator tries to distinguish between ‘real’ images (crops of hero images taken directly from minimap frames), and ‘fake’ images (generated masks added to random hero portraits). After much tweaking effort and training time, we were able to train a mask-generating generator, which we put to use in the next section.
 
 ## Training the Classifier
 
-We now had a trained generator that was capable of producing masks that, when added to any raw champion portrait, would take us to a distribution of /images that look (somewhat) like how that champion might appear on the minimap. We could thus train a classifier on this distribution, in the hopes that it would also work for detecting champions on real minimap frames.
+We now had a trained generator that was capable of producing masks that, when added to any raw champion portrait, would take us to a distribution of images that look (somewhat) like how that champion might appear on the minimap. We could thus train a classifier on this distribution, in the hopes that it would also work for detecting champions on real minimap frames.
 
 The below diagram illustrates the training setup for this classifier:
 
@@ -79,7 +79,7 @@ This step is quite simple really. We just train an ordinary convolutional neural
 
 ## Calculating the detection maps
 
-Our classifier is a fully-convolutional neural network that takes colour 24x24 ‘champion-on-the-minimap’ /images as input and outputs a **1x1**x(NumChampions + 1) tensor. We pass this tensor through a softmax nonlinearity to estimate class probabilities (the additional output channel is for a background class; we trained our classifier to also detect random patches of minimap with no champion and output a high ‘background’ probability).
+Our classifier is a fully-convolutional neural network that takes colour 24x24 ‘champion-on-the-minimap’ images as input and outputs a **1x1**x(NumChampions + 1) tensor. We pass this tensor through a softmax nonlinearity to estimate class probabilities (the additional output channel is for a background class; we trained our classifier to also detect random patches of minimap with no champion and output a high ‘background’ probability).
 
 If we instead pass an entire minimap crop of size 296x296 to this classifer, we get a **12x12**x(NumChampions + 1) output. Each square of this **12x12** grid represents a region of the minimap, and in each of these squares we have the detection probabilities for each champion. We can increase the resolution of this ‘detection map’ to **70x70** by reducing the stride of the final two layers of our classifier (a convolution layer followed by an average pooling layer) to 1, from 2 (this trick has been applied elsewhere, [e.g. in this work](https://arxiv.org/abs/1312.6229)).
 

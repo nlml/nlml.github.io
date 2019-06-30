@@ -110,4 +110,7 @@ $$
 \text{loss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{\text{x.size}(0)}
 $$
 
-This means that 
+This loss term basically encourages the model's predicted scores for the target labels to be at least 1.0 larger than every single non-target label.
+
+Unfortunately, despite seeming like a good idea on paper, switching to this loss function did not seem to provide any performance improvement.
+

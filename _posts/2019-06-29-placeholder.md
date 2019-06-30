@@ -1,5 +1,5 @@
 ---
-title: "Semi-Supervised Learning (and more) - Kaggle Freesound Audio Tagging 2019"
+title: "Semi-Supervised Learning (and more): Kaggle / Freesound Audio Tagging"
 category : "kaggle"
 tagline: "My experience with the Freesound Audio Tagging 2019 Kaggle competition."
 tags : [neural-networks, kaggle, audio, semi-supervised-learning]

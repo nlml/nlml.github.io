@@ -4,10 +4,11 @@ category : "kaggle"
 tagline: "My experience with the Kaggle Freesound Audio Tagging Competition."
 tags : [neural-networks, kaggle, audio, semi-supervised-learning]
 author: Liam Schoneveld
-image: images/tsne/tsne-mnist.png
+image: images/fat/spectro.png
 ---
 
 ![a spectrogram of an audio clip](/images/fat/spectro.png)
+
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
 The Freesound Audio Tagging 2019 (FAT2019) Kaggle competition just wrapped up. I didn't place too well (my submission was ranked around 144th out of 408 on the private leaderboard). But winning wasn't exactly my focus. I tried some interesting things and would like to share what I did, plus provide some explanations and code so others might be able to benefit from my work.
@@ -67,6 +68,7 @@ Another key feature of this kernel was **cosine annealing learning rate scheduli
 In cosine annealing, the learning rate (LR) during training fluctuates between a minimum and maximum LR according to a cosine function. The LR is updated at the end of each epoch according to this function.
 
 ![a spectrogram of an audio clip](/images/fat/cosine.png)
+
 *The learning rate (y-axis) used in training over epochs (x-axis) with cosine annealing*
 
 The ideas behind cosine annealing LR were introduced in [this paper](https://arxiv.org/abs/1608.03983). Often, cosine annealing leads to two main benefits:
@@ -129,6 +131,7 @@ I tried quite a few SSL methods; I cover each below.
 Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://arxiv.org/abs/1704.03976) to work very well in the image domain.
 
 ![a spectrogram of an audio clip](/images/fat/vat.png)
+
 *In VAT, well add small amounts of adversarial noise to images, then tell the model that the class of these images should not change, despite the noise ([via](https://arxiv.org/abs/1704.03976))*
 
 ### What is it?
@@ -145,9 +148,9 @@ To find the adversarial direction:
 
 1. We initliase a random-normal tensor \\(r\\) with the same shape as \\(X\\).
 
-2. We calculate the gradient of \\(r\\) with respect to \\(KL(f(X)|f(X+r))\\), where KL is the KL divergence between the two model outputs.
+2. We calculate the gradient of \\(r\\) with respect to \\(KL(f(X)|f(X+r))\\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
-3. 
+3. f
 
 Or, in math terms, how do we find \\(\epsilon = argmax_{\epsilon} ||f(X) - f(X + \epsilon)||\\), such that \\(||\epsilon|| < \alpha\\) where \\(\alpha\\) is some maximum change tolerance parameter? In short, we approximate it by finding the 'adversarial direction' from \\(X\\), and multiplying this by \\(\alpha\\).
 

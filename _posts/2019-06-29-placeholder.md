@@ -7,7 +7,7 @@ author: Liam Schoneveld
 image: images/fat/spectro.png
 ---
 
-![a spectrogram of an audio clip](/images/fat/spectro.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
 
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
@@ -67,7 +67,7 @@ Another key feature of this kernel was **cosine annealing learning rate scheduli
 
 In cosine annealing, the learning rate (LR) during training fluctuates between a minimum and maximum LR according to a cosine function. The LR is updated at the end of each epoch according to this function.
 
-![a spectrogram of an audio clip](/images/fat/cosine.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/cosine.png)
 
 *The learning rate (y-axis) used in training over epochs (x-axis) with cosine annealing*
 
@@ -130,7 +130,7 @@ I tried quite a few SSL methods; I cover each below.
 
 Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://arxiv.org/abs/1704.03976) to work very well in the image domain.
 
-![a spectrogram of an audio clip](/images/fat/vat.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/vat.png)
 
 *In VAT, well add small amounts of adversarial noise to images, then tell the model that predictions with these images should not change, despite the noise ([via](https://arxiv.org/abs/1704.03976))*
 
@@ -153,8 +153,8 @@ To find the adversarial direction, we:
 Once we have \\( \mathbf{d} \\), we move \\( X \\) in that direction by some small scaling factor \\( \epsilon \\). We then add a term to our loss that penalises the difference in the model's predictions, i.e.:
 
 $$
-loss_{unsupervised}(X) = KL ( f(X) | f(X + \epsilon * \mathbf{r}) ) \\
-loss = loss_{supervised}(X, y) + loss_{unsupervised}(X)
+loss_\text{{unsupervised}}(X) = KL ( f(X) | f(X + \epsilon * \mathbf{r}) ) \\
+loss = loss_\text{{supervised}}(X, y) + loss_\text{{unsupervised}}(X)
 $$
 
-Since this \\( loss_{unsupervised} \\) term does not depend on any label \\( y \\), 
+Since this \\( loss_\text{{unsupervised}} \\) term does not depend on any label \\( y \\), we can also use it with our unlabeled data

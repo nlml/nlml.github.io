@@ -111,7 +111,7 @@ The metric for this competition was *lwlwrap* (an implementation of this metric 
 I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others (binary cross-entropy, on the other hand, is somewhat more constrained in terms of the domain of the output scores) I used Pytorch's [`MultiLabelMarginLoss`](https://pytorch.org/docs/stable/nn.html#multilabelmarginloss) to implement a hinge loss for this purpose. This loss is defined as:
 
 $$
-{\textloss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{{\textx.size}(0)}
+\text{loss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{\text{x.size}(0)}
 $$
 
 This loss term basically encourages the model's predicted scores for the target labels to be at least 1.0 larger than every single non-target label.
@@ -158,3 +158,5 @@ loss = loss_{\text{supervised}}(X, y) + loss_{\text{unsupervised}}(X)
 $$
 
 Since this \\( loss_{\text{unsupervised}} \\) term does not depend on any label \\( y \\), we can also use it with our unlabeled data
+
+fd

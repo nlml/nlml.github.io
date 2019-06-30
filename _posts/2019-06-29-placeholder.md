@@ -111,7 +111,7 @@ The metric for this competition was *lwlwrap* (an implementation of this metric 
 I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others (binary cross-entropy, on the other hand, is somewhat more constrained in terms of the domain of the output scores) I used Pytorch's [`MultiLabelMarginLoss`](https://pytorch.org/docs/stable/nn.html#multilabelmarginloss) to implement a hinge loss for this purpose. This loss is defined as:
 
 $$
-\text{loss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{\text{x.size}(0)}
+{\textloss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{{\textx.size}(0)}
 $$
 
 This loss term basically encourages the model's predicted scores for the target labels to be at least 1.0 larger than every single non-target label.
@@ -144,15 +144,17 @@ To do this, we need to first find the *adversarial direction*: the direction we 
 
 To find the adversarial direction, we:
 
-1. Initliase a random-normal tentest
-2. Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X+\mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
-3. The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
+Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
+
+Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X+\mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+
+The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 
 Once we have \\( \mathbf{d} \\), we move \\( X \\) in that direction by some small scaling factor \\( \epsilon \\). We then add a term to our loss that penalises the difference in the model's predictions, i.e.:
 
 $$
-loss_\text{{unsupervised}}(X) = KL ( f(X) || f(X + \epsilon * \mathbf{r}) ) \\
-loss = loss_\text{{supervised}}(X, y) + loss_\text{{unsupervised}}(X)
+loss_{\text{unsupervised}}(X) = KL ( f(X) || f(X + \epsilon * \mathbf{r}) ) \\
+loss = loss_{\text{supervised}}(X, y) + loss_{\text{unsupervised}}(X)
 $$
 
-Since this \\( loss_\text{{unsupervised}} \\) term does not depend on any label \\( y \\), we can also use it with our unlabeled data
+Since this \\( loss_{\text{unsupervised}} \\) term does not depend on any label \\( y \\), we can also use it with our unlabeled data

@@ -148,9 +148,9 @@ To find the adversarial direction, we:
 
 2. Calculate the gradient of \\(r\\) with respect to \\( KL(f(X) ||f(X+r)) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
-3. The normalised direction of this gradient is our adversarial direction, which we call \\( d \\).
+3. The normalised direction of this gradient is our adversarial direction, which we call \\( mathbf{d} \\).
 
-Once we have \\( d \\), we move \\( X \\) in that direction by some small scaling factor \\( \epsilon \\). We then add a term to our loss that penalises the difference in the model's predictions, i.e.:
+Once we have \\( mathbf{d} \\), we move \\( X \\) in that direction by some small scaling factor \\( \epsilon \\). We then add a term to our loss that penalises the difference in the model's predictions, i.e.:
 
 $$
 loss_{unsupervised} = KL ( f(X) || f(X + \epsilon * r) ) \\

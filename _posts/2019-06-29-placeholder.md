@@ -7,7 +7,7 @@ author: Liam Schoneveld
 image: images/tsne/tsne-mnist.png
 ---
 
-![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
+![a spectrogram of an audio clip](/images/fat/spectro.png)
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
 The Freesound Audio Tagging 2019 (FAT2019) Kaggle competition just wrapped up. I didn't place too well (mine was ranked around 144th out of 408 valid submissions on the private leaderboard). Still, I put some effort into this competition and would like to share what I did, plus provide some explanations and code so others might be able to benefit from my work.
@@ -65,7 +65,7 @@ Another key feature of this kernel was **cosine annealing learning rate scheduli
 
 In cosine annealing, the learning rate (LR) during training fluctuates between a minimum and maximum LR according to a cosine function. The LR is updated at the end of each epoch according to this function.
 
-![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/cosine.png)
+![a spectrogram of an audio clip](/images/fat/cosine.png)
 *The learning rate (y-axis) used in training over epochs (x-axis) with cosine annealing*
 
 The ideas behind cosine annealing LR were introduced in [this paper](https://arxiv.org/abs/1608.03983). Often, cosine annealing leads to two main benefits:

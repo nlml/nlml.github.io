@@ -118,7 +118,7 @@ This loss term basically encourages the model's predicted scores for the target 
 
 Unfortunately, despite seeming like a good idea on paper, switching to this loss function did not appear to provide any performance improvement.
 
-# Semi-supervised learning
+## Semi-supervised learning
 
 From this point on, a lot of the things I tried centred around *semi-supervised learning* (SSL). Labeling data is a costly process, but unlabeled data is abundant. In SSL, we seek to benefit from unlabeled data by incorporating it into our model's training loss, alongside the labeled data. SSL was the focus of my [masters' thesis](http://www.scriptiesonline.uba.uva.nl/635970). 
 
@@ -132,7 +132,7 @@ Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://
 
 ![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/vat.png)
 
-*In VAT, well add small amounts of adversarial noise to images, then tell the model that predictions with these images should not change, despite the noise ([via](https://arxiv.org/abs/1704.03976))*
+*In VAT, we add small amounts of adversarial noise to images, then tell the model that predictions with these images should not change, despite the noise ([via](https://arxiv.org/abs/1704.03976))*
 
 ### What is it?
 
@@ -144,11 +144,11 @@ To do this, we need to first find the *adversarial direction*: the direction we 
 
 To find the adversarial direction, we:
 
-Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
+1. Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
 
-Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X+\mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+2. Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X + \mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
-The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
+3. The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 
 Once we have \\( \mathbf{d} \\), we move \\( X \\) in that direction by some small scaling factor \\( \epsilon \\). We then add a term to our loss that penalises the difference in the model's predictions, i.e.:
 
@@ -161,6 +161,16 @@ Since this \\( loss_{\text{unsupervised}} \\) term does not depend on any label 
 
 ### Implementation for FAT2019
 
-There is a great Pytorch implementation of VAT on [github](https://github.com/lyakaap/VAT-pytorch), but I needed to make a couple of changes in order to use it for FAT2019.
+There is a great Pytorch implementation of VAT on [github](https://github.com/lyakaap/VAT-pytorch). With this implementation, adding VAT to a model is simple:
 
-The main problem is that the softmax + KL-divergence setup provided in that repo will not work in our multi-label context. To overcome this I removed the softmax, and replaced the KL-divergence loss between the new and old predictions with the binary cross-entropy between such - see the diffs between the [Pytorch VAT repo](https://github.com/lyakaap/VAT-pytorch/blob/master/vat.py#L60) and [my fork](https://github.com/nlml/freesoundkaggle/blob/master/vat_loss.py#L67) for more details
+```
+vat_loss = VATLoss(xi=10.0, eps=1.0, ip=1)
+cross_entropy = nn.CrossEntropyLoss()
+
+# LDS should be calculated before the forward for cross entropy
+lds = vat_loss(model, data)
+output = model(data)
+loss = cross_entropy(output, target) + args.alpha * lds
+```
+
+To use this repo for FAT2019 however, I needed to make a couple of changes to the implementation. The main problem is that the softmax + KL-divergence setup provided in that repo will not work in our multi-label context. To overcome this I removed the softmax, and replaced the KL-divergence loss between the new and old predictions with the binary cross-entropy loss. For more details, see the diffs between the [Pytorch VAT repo](https://github.com/lyakaap/VAT-pytorch/blob/master/vat.py#L60) and [my fork](https://github.com/nlml/freesoundkaggle/blob/master/vat_loss.py#L67).

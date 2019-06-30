@@ -18,7 +18,7 @@ This post starts with a brief overview of the competition itself. Then I work ch
 
 The Freesound Audio Tagging 2019 competition was about labeling audio clips. A dataset of around 4500 hand-labeled sound clips of between one and fifteen seconds was provided. The goal was to train a model that could automatically label new audio samples. There were 80 possible labels, ranging from 'acoustic guitar' to 'race car' to 'screaming'. Audio samples could be tagged with one or more labels. Here are a few examples:
 
-<p><audio ref='themeSong' src="https://raw.githubuserocntent.com/nlml/nlml.github.io/master/assets/1.mp3
+<p><audio ref='themeSong' src="https://raw.githubuserocntent.com/nlml/nlml.github.io/master/assets/0.mp3
 " controls></audio></p>
 *Labels = [Accelerating_and_revving_and_vroom, Motorcycle]*
 
@@ -36,7 +36,7 @@ Like many other entrants, my starting point was a [public kernel](https://www.ka
 
 ## Skip connections
 
-I was able to get a big boost in score (~0.610 --> ~0.639) through simply adding [DenseNet](https://arxiv.org/abs/1608.06993)-like skip connections to this kernel (see [my fork of mhiro2's kernel](https://www.kaggle.com/liamsch/simple-2d-cnn-classifier-with-pytorch)). 
+I was able to get a big boost in score (~0.610 --> ~0.639) through simply adding [DenseNet](https://arxiv.org/abs/1608.06993)-like skip connections to this kernel. 
 
 ### What is it?
 
@@ -44,7 +44,7 @@ In this case, I implemented skip connections by concatenating each network layer
 
 ### Implementation
 
-The change is illustrated by this code snippet:
+The change is illustrated in my [kernel fork](https://www.kaggle.com/liamsch/simple-2d-cnn-classifier-with-pytorch) and this code snippet:
 
 {% highlight python %}
 def forward(self, input):
@@ -104,7 +104,7 @@ scheduler = CosineAnnealingLR(optimizer, T_max=t_max, eta_min=min_lr)
 
 The metric for this competition was *lwlwrap* (an implementation of this metric can be found [here](https://www.kaggle.com/christoffer/lwlwrap)). Without going into too many details, it can be stated that lwlwrap works as a *ranking* metric. That is, it does not care what score you assign to the target tag(s), only that those scores are higher than the scores for all other tags.
 
-I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others. I used Pytorch's `MultiLabelMarginLoss` to implement a hinge loss for this purpose. This loss is defined as:
+I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others. I used Pytorch's [`MultiLabelMarginLoss`](https://pytorch.org/docs/stable/nn.html#multilabelmarginloss) to implement a hinge loss for this purpose. This loss is defined as:
 
 $$
 \text{loss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{\text{x.size}(0)}
@@ -112,5 +112,6 @@ $$
 
 This loss term basically encourages the model's predicted scores for the target labels to be at least 1.0 larger than every single non-target label.
 
-Unfortunately, despite seeming like a good idea on paper, switching to this loss function did not seem to provide any performance improvement.
+Unfortunately, despite seeming like a good idea on paper, switching to this loss function did not appear to provide any performance improvement.
 
+## 

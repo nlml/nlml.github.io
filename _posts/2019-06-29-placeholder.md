@@ -146,7 +146,7 @@ To find the adversarial direction, we:
 
 Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
 
-Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X+\mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X+\mathbf{r}) )\\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
 The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 
@@ -159,4 +159,7 @@ $$
 
 Since this \\( loss_{\text{unsupervised}} \\) term does not depend on any label \\( y \\), we can also use it with our unlabeled data
 
-fd
+### Implementation for FAT2019
+
+There is a great Pytorch implementation of VAT on [github](https://github.com/lyakaap/VAT-pytorch), but I needed to make a couple of changes in order to use it for FAT2019.
+

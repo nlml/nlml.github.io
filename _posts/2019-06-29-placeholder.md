@@ -1,7 +1,7 @@
 ---
 title: "Semi-Supervised Learning (and more): Kaggle Freesound Audio Tagging"
 category : "kaggle"
-tagline: "My experience with the Kaggle Freesound Audio Tagging Competition."
+tagline: "My experience with the Kaggle Freesound Audio Tagging 2019 Competition."
 tags : [neural-networks, kaggle, audio, semi-supervised-learning]
 author: Liam Schoneveld
 image: images/fat/spectro.png
@@ -165,12 +165,16 @@ There is a great Pytorch implementation of VAT on [github](https://github.com/ly
 
 ```
 vat_loss = VATLoss(xi=10.0, eps=1.0, ip=1)
-cross_entropy = nn.CrossEntropyLoss()
-
-# LDS should be calculated before the forward for cross entropy
+# ... in training loop ...
 lds = vat_loss(model, data)
 output = model(data)
 loss = cross_entropy(output, target) + args.alpha * lds
 ```
 
 To use this repo for FAT2019 however, I needed to make a couple of changes to the implementation. The main problem is that the softmax + KL-divergence setup provided in that repo will not work in our multi-label context. To overcome this I removed the softmax, and replaced the KL-divergence loss between the new and old predictions with the binary cross-entropy loss. For more details, see the diffs between the [Pytorch VAT repo](https://github.com/lyakaap/VAT-pytorch/blob/master/vat.py#L60) and [my fork](https://github.com/nlml/freesoundkaggle/blob/master/vat_loss.py#L67).
+
+## Mixup and Mixmatch
+
+## Mean teacher
+
+## Ensembling and knowledge distillation

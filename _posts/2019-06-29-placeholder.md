@@ -7,7 +7,7 @@ author: Liam Schoneveld
 image: images/tsne/tsne-mnist.png
 ---
 
-![a spectrogram of an audio clip](/images/fat/spectro.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
 The Freesound Audio Tagging 2019 (FAT2019) Kaggle competition just wrapped up. I didn't place too well (my submission was ranked around 144th out of 408 on the private leaderboard). But winning wasn't exactly my focus. I tried some interesting things and would like to share what I did, plus provide some explanations and code so others might be able to benefit from my work.
@@ -20,33 +20,33 @@ The Freesound Audio Tagging 2019 competition was about labeling audio clips. A d
 
 <p><audio ref='themeSong' src="https://raw.githubuserocntent.com/nlml/nlml.github.io/master/assets/1.mp3
 " controls></audio></p>
-*Labels = `[Accelerating_and_revving_and_vroom, Motorcycle]`*
+*Labels = [Accelerating_and_revving_and_vroom, Motorcycle]*
 
 <p><audio ref='themeSong' src="https://raw.githubusercontent.com/nlml/nlml.github.io/master/assets/2.mp3
 " controls></audio></p>
-*Labels = `[Fill_(with_liquid)]`*
+*Labels = [Fill_(with_liquid)]*
 
 <p><audio ref='themeSong' src="https://raw.githubusercontent.com/nlml/nlml.github.io/master/assets/3.mp3
 " controls></audio></p>
-*Labels = `[Cheering, Crowd]`*
+*Labels = [Cheering, Crowd]*
 
 ## My starting point - mhiro2's public kernel
 
-Like many other entrants, my starting point was a [public kernel](https://www.kaggle.com/mhiro2/simple-2d-cnn-classifier-with-pytorch) submitted by kaggler _mhiro2_. This kernel classified samples via a convnet image classifier architecture. 'Images' of each audio clip were created by taking the [log-mel spectrogram](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum) of the audio signal. 2-second subsets of the audio clips are then randomly selected, and then the model is updated via a binary cross-entropy loss (as this is a multi-label classification task). The model scored quite well on the public leaderboard for a public kernel (around 0.610 if I remember correctly).
+Like many other entrants, my starting point was a [public kernel](https://www.kaggle.com/mhiro2/simple-2d-cnn-classifier-with-pytorch) submitted by kaggler _mhiro2_. This kernel classified samples via a convolutional neural network (convnet) image classifier architecture. 'Images' of each audio clip were created by taking the [log-mel spectrogram](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum) of the audio signal. 2-second subsets of the audio clips are randomly selected, and the model is then trained via a binary cross-entropy loss (as this is a multi-label classification task). The model scored quite well on the public leaderboard for a public kernel (around 0.610 if I remember correctly).
 
-### Skip connections
+## Skip connections
 
-I was able to get a big boost in score (0.610 -> 0.639) through simply adding [DenseNet](https://arxiv.org/abs/1608.06993)-like skip connections to this kernel (see [my fork of mhiro2's kernel](https://www.kaggle.com/liamsch/simple-2d-cnn-classifier-with-pytorch)). 
+I was able to get a big boost in score (~0.610 --> ~0.639) through simply adding [DenseNet](https://arxiv.org/abs/1608.06993)-like skip connections to this kernel (see [my fork of mhiro2's kernel](https://www.kaggle.com/liamsch/simple-2d-cnn-classifier-with-pytorch)). 
 
-#### What is it?
+### What is it?
 
 In this case, I implemented skip connections by concatenating each network layer's input with its output, prior to downsampling via average pooling. Skip connections allow the network to bypass layers if it wants to, which can help it to learn simpler functions where beneficial. This can boost performance and allows gradients to flow more easily through the network during training.
 
-#### Implementation
+### Implementation
 
 The change is illustrated by this code snippet:
 
-```
+{% highlight python %}
 def forward(self, input):
     x = self.conv1(input)
     x = self.conv2(x)
@@ -56,17 +56,17 @@ def forward(self, input):
         x = torch.cat([x, input], 1)
     x = F.avg_pool2d(x, 2)
     return x
-```
+{% endhighlight %}
 
-### Cosine annealing learning rate scheduling
+## Cosine annealing learning rate scheduling
 
 Another key feature of this kernel was **cosine annealing learning rate scheduling**. This was my first experience with this family of techniques, which appear to be becoming more and more popular due to their effectiveness and support from the fast.ai crowd.
 
-#### What is it?
+### What is it?
 
 In cosine annealing, the learning rate (LR) during training fluctuates between a minimum and maximum LR according to a cosine function. The LR is updated at the end of each epoch according to this function.
 
-![a spectrogram of an audio clip](/images/fat/cosine.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/cosine.png)
 *The learning rate (y-axis) used in training over epochs (x-axis) with cosine annealing*
 
 The ideas behind cosine annealing LR were introduced in [this paper](https://arxiv.org/abs/1608.03983). Often, cosine annealing leads to two main benefits:
@@ -99,3 +99,15 @@ scheduler = CosineAnnealingLR(optimizer, T_max=t_max, eta_min=min_lr)
 		train_one_epoch()
 		scheduler.step()
 ```
+
+## Hinge loss
+
+The metric for this competition was *lwlwrap* (an implementation of this metric can be found [here](https://www.kaggle.com/christoffer/lwlwrap)). Without going into too many details, it can be stated that lwlwrap works as a *ranking* metric. That is, it does not care what score you assign to the target tag(s), only that those scores are higher than the scores for all other tags.
+
+I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others. I used Pytorch's `MultiLabelMarginLoss` to implement a hinge loss for this purpose. This loss is defined as:
+
+$$
+\text{loss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{\text{x.size}(0)}
+$$
+
+This means that 

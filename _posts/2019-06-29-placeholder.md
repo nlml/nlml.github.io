@@ -7,7 +7,7 @@ author: Liam Schoneveld
 image: images/fat/spectro.png
 ---
 
-![a spectrogram of an audio clip](/images/fat/spectro.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
 
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
@@ -67,7 +67,7 @@ Another key feature of this kernel was **cosine annealing learning rate scheduli
 
 In cosine annealing, the learning rate (LR) during training fluctuates between a minimum and maximum LR according to a cosine function. The LR is updated at the end of each epoch according to this function.
 
-![a spectrogram of an audio clip](/images/fat/cosine.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/cosine.png)
 
 *The learning rate (y-axis) used in training over epochs (x-axis) with cosine annealing*
 
@@ -130,7 +130,7 @@ I tried quite a few SSL methods; I cover each below.
 
 Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://arxiv.org/abs/1704.03976) to work very well in the image domain.
 
-![a spectrogram of an audio clip](/images/fat/vat.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/vat.png)
 
 *In VAT, well add small amounts of adversarial noise to images, then tell the model that the class of these images should not change, despite the noise ([via](https://arxiv.org/abs/1704.03976))*
 
@@ -140,17 +140,19 @@ VAT is inspired by the idea of adversarial examples. It has been shown that, if 
 
 In VAT, we try to generate such adversarial examples on-the-fly during training, and then update our network by saying that its prediction should not change in response to such small changes.
 
-This works as follows. We take an input image \\(X\\). We then add some small value \\(\epsilon\\) to \\(X\\) such that our model's prediction with the new image \\f(X + \epsilon\\) is maximally changed from the original prediction \\f(X\\).
+This works as follows. We take an input image \\( X \\). We then add some small value \\( \epsilon \\) to \\( X \\) such that our model's prediction with the new image \\( f(X + \epsilon) \\) is maximally changed from the original prediction \\( f(X) \\).
 
-How do we find \\(\epsilon\\), the 'image' to add to \\(X\\) that maximally changes our models output prediction? First, we need to find the *adversarial direction*: the direction to move \\(X\\) towards such that the model output is maximally changed.
+How do we find \\( \epsilon \\), the 'image' to add to \\(X\\) that maximally changes our models output prediction? First, we need to find the *adversarial direction*: the direction to move \\(X\\) towards such that the model output is maximally changed.
 
 To find the adversarial direction:
 
 1. We initliase a random-normal tensor \\(r\\) with the same shape as \\(X\\).
 
-2. We calculate the gradient of \\(r\\) with respect to \\(KL(f(X)|f(X+r))\\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+2. We calculate the gradient of \\(r\\) with respect to \\( KL(f(X) ||f(X+r)) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
-3. f
+3. The normalised direction of this gradient is our adversarial direction, which we call \\(d\\).
+
+We then just add \\(\epsilon * d\\) to our image, 
 
 Or, in math terms, how do we find \\(\epsilon = argmax_{\epsilon} ||f(X) - f(X + \epsilon)||\\), such that \\(||\epsilon|| < \alpha\\) where \\(\alpha\\) is some maximum change tolerance parameter? In short, we approximate it by finding the 'adversarial direction' from \\(X\\), and multiplying this by \\(\alpha\\).
 

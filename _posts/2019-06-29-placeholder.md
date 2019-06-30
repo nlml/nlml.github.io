@@ -1,7 +1,7 @@
 ---
-title: "Semi-Supervised Learning (and more): Kaggle / Freesound Audio Tagging"
+title: "Semi-Supervised Learning (and more): Kaggle Freesound Audio Tagging"
 category : "kaggle"
-tagline: "My experience with the Freesound Audio Tagging 2019 Kaggle competition."
+tagline: "My experience with the Kaggle Freesound Audio Tagging Competition."
 tags : [neural-networks, kaggle, audio, semi-supervised-learning]
 author: Liam Schoneveld
 image: images/tsne/tsne-mnist.png
@@ -10,24 +10,25 @@ image: images/tsne/tsne-mnist.png
 ![a spectrogram of an audio clip](/images/fat/spectro.png)
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
-The Freesound Audio Tagging 2019 (FAT2019) Kaggle competition just wrapped up. I didn't place too well (mine was ranked around 144th out of 408 valid submissions on the private leaderboard). Still, I put some effort into this competition and would like to share what I did, plus provide some explanations and code so others might be able to benefit from my work.
+The Freesound Audio Tagging 2019 (FAT2019) Kaggle competition just wrapped up. I didn't place too well (my submission was ranked around 144th out of 408 on the private leaderboard). But winning wasn't exactly my focus. I tried some interesting things and would like to share what I did, plus provide some explanations and code so others might be able to benefit from my work.
 
 This post starts with a brief overview of the competition itself. Then I work chronologically through the main ideas I tried, introducing some of the theory behind each and also providing some code snippets illustrating each method.
 
-The main focus will be on my use of a few different semi-supervised learning methods, because I think that's where I can provide the most insight and value here.
-
 ## The competition
 
-The Freesound Audio Tagging 2019 competition focused on audio tagging. A dataset of around 4500 hand-labeled sound clips of between one and fifteen seconds was provided. The goal was to train a model that could label new audio samples. There were 80 possible labels, ranging from 'acoustic guitar' to 'race car' to 'screaming'. Here are a few examples:
+The Freesound Audio Tagging 2019 competition was about labeling audio clips. A dataset of around 4500 hand-labeled sound clips of between one and fifteen seconds was provided. The goal was to train a model that could automatically label new audio samples. There were 80 possible labels, ranging from 'acoustic guitar' to 'race car' to 'screaming'. Audio samples could be tagged with one or more labels. Here are a few examples:
 
 <p><audio ref='themeSong' src="https://raw.githubuserocntent.com/nlml/nlml.github.io/master/assets/1.mp3
 " controls></audio></p>
+*Labels = `[Accelerating_and_revving_and_vroom, Motorcycle]`*
 
 <p><audio ref='themeSong' src="https://raw.githubusercontent.com/nlml/nlml.github.io/master/assets/2.mp3
 " controls></audio></p>
+*Labels = `[Fill_(with_liquid)]`*
 
 <p><audio ref='themeSong' src="https://raw.githubusercontent.com/nlml/nlml.github.io/master/assets/3.mp3
 " controls></audio></p>
+*Labels = `[Cheering, Crowd]`*
 
 ## My starting point - mhiro2's public kernel
 

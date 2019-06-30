@@ -128,13 +128,16 @@ I tried quite a few SSL methods; I cover each below.
 
 Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://arxiv.org/abs/1704.03976) to work very well in the image domain.
 
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
+*In VAT, well add small amounts of adversarial noise to images, then tell the model that the class of these images should not change, despite the noise*
+
 ### What is it?
 
 VAT is inspired by the idea of adversarial examples. It has been shown that, if we peer inside an image classifier, we can exploit it and make it misclassify an image by just making tiny changes to that image.
 
 In VAT, we try to generate such adversarial examples on-the-fly during training, and then update our network by saying that its prediction should not change in response to such small changes.
 
-This works as follows. We take an input image \\(X\\). We then add some small value \\(\epsilon\\) to \\(X\\) such that our model's prediction is maximally changed on the new image \\(X + \epsilon\\).
+This works as follows. We take an input image \\(X\\). We then add some small value \\(\epsilon\\) to \\(X\\) such that our model's prediction with the new image \\f(X + \epsilon\\) is maximally changed from the original prediction \\f(X\\).
 
 How do we find \\(\epsilon\\), the 'image' to add to \\(X\\) that maximally changes our models output prediction? First, we need to find the *adversarial direction*: the direction to move \\(X\\) towards such that the model output is maximally changed.
 

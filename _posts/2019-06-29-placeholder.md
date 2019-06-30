@@ -163,3 +163,4 @@ Since this \\( loss_{\text{unsupervised}} \\) term does not depend on any label 
 
 There is a great Pytorch implementation of VAT on [github](https://github.com/lyakaap/VAT-pytorch), but I needed to make a couple of changes in order to use it for FAT2019.
 
+The main problem is that the softmax + KL-divergence setup provided in that repo will not work in our multi-label context. To overcome this I removed the softmax, and replaced the KL-divergence loss between the new and old predictions with the binary cross-entropy between such - see the diffs between the [Pytorch VAT repo](https://github.com/lyakaap/VAT-pytorch/blob/master/vat.py#L60) and [my fork](https://github.com/nlml/freesoundkaggle/blob/master/vat_loss.py#L67) for more details

@@ -104,7 +104,7 @@ scheduler = CosineAnnealingLR(optimizer, T_max=t_max, eta_min=min_lr)
 
 The metric for this competition was *lwlwrap* (an implementation of this metric can be found [here](https://www.kaggle.com/christoffer/lwlwrap)). Without going into too many details, it can be stated that lwlwrap works as a *ranking* metric. That is, it does not care what score you assign to the target tag(s), only that those scores are higher than the scores for all other tags.
 
-I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others. I used Pytorch's [`MultiLabelMarginLoss`](https://pytorch.org/docs/stable/nn.html#multilabelmarginloss) to implement a hinge loss for this purpose. This loss is defined as:
+I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others (binary cross-entropy, on the other hand, is somewhat more constrained in terms of the domain of the output scores) I used Pytorch's [`MultiLabelMarginLoss`](https://pytorch.org/docs/stable/nn.html#multilabelmarginloss) to implement a hinge loss for this purpose. This loss is defined as:
 
 $$
 \text{loss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{\text{x.size}(0)}
@@ -113,5 +113,10 @@ $$
 This loss term basically encourages the model's predicted scores for the target labels to be at least 1.0 larger than every single non-target label.
 
 Unfortunately, despite seeming like a good idea on paper, switching to this loss function did not appear to provide any performance improvement.
+
+# Semi-Supervised Learning
+
+From this point on, a lot of the things I tried centred around *semi-supervised learning*. 
+[masters' thesis](http://www.scriptiesonline.uba.uva.nl/635970)
 
 ## 

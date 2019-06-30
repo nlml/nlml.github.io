@@ -146,7 +146,7 @@ To find the adversarial direction, we:
 
 Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
 
-Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X+\mathbf{r}) )\\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X+\mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
 The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 

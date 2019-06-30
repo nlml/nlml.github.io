@@ -144,16 +144,17 @@ To do this, we need to first find the *adversarial direction*: the direction we 
 
 To find the adversarial direction, we:
 
-1. Initliase a random-normal tensor \\( mathbf{r} \\) with the same shape as \\(X\\).
+1. Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\(X\\).
 
-2. Calculate the gradient of \\( mathbf{r} \\) with respect to \\( KL(f(X) | f(X+mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+2. Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) | f(X+\mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
-3. The normalised direction of this gradient is our adversarial direction, which we call \\( mathbf{d} \\).
+3. The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 
-Once we have \\( mathbf{d} \\), we move \\( X \\) in that direction by some small scaling factor \\( \epsilon \\). We then add a term to our loss that penalises the difference in the model's predictions, i.e.:
+Once we have \\( \mathbf{d} \\), we move \\( X \\) in that direction by some small scaling factor \\( \epsilon \\). We then add a term to our loss that penalises the difference in the model's predictions, i.e.:
 
 $$
-loss_{unsupervised} = KL ( f(X) | f(X + \epsilon * mathbf{r}) ) \\
-loss = loss_{supervised} + loss_{unsupervised}
+loss_{unsupervised}(X) = KL ( f(X) | f(X + \epsilon * \mathbf{r}) ) \\
+loss = loss_{supervised}(X, y) + loss_{unsupervised}(X)
 $$
 
+Since this \\( loss_{unsupervised} \\) term does not depend on any label \\( y \\), 

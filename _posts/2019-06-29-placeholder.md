@@ -42,7 +42,7 @@ I was able to get a big boost in score (~0.610 --> ~0.639) through simply adding
 
 In this case, I implemented skip connections by concatenating each network layer's input with its output, prior to downsampling via average pooling. Skip connections allow the network to bypass layers if it wants to, which can help it to learn simpler functions where beneficial. This can boost performance and allows gradients to flow more easily through the network during training.
 
-### Implementation
+### Implementation for FAT2019
 
 The change is illustrated in my [kernel fork](https://www.kaggle.com/liamsch/simple-2d-cnn-classifier-with-pytorch) and this code snippet:
 
@@ -81,7 +81,7 @@ The main theory behind why cosine annealing (or SGD with restarts) leads to bett
 
 Cosine annealing to be seems to be a really effective techinque. I'm also curious to dive into other practices advocated by the fast.ai crowd, namely *[one cycle policies](https://towardsdatascience.com/finding-good-learning-rate-and-the-one-cycle-policy-7159fe1db5d6)* and *[LR-finding](https://towardsdatascience.com/estimating-optimal-learning-rate-for-a-deep-neural-network-ce32f2556ce0)*.
 
-### Implementation
+### Implementation for FAT2019
 
 Pytorch contains a `CosineAnnealingLR` scheduler and we can see its usage mhiro2's kernel. Basically:
 
@@ -91,8 +91,10 @@ max_lr = 3e-3  # Maximum LR
 min_lr = 1e-5  # Minimum LR
 t_max = 10     # How many epochs to go from max_lr to min_lr
 
-optimizer = Adam(params=model.parameters(), lr=max_lr, amsgrad=False)
-scheduler = CosineAnnealingLR(optimizer, T_max=t_max, eta_min=min_lr)
+optimizer = Adam(
+    params=model.parameters(), lr=max_lr, amsgrad=False)
+scheduler = CosineAnnealingLR(
+    optimizer, T_max=t_max, eta_min=min_lr)
 
 # Training loop
 	for epoch in range(num_epochs):
@@ -114,9 +116,22 @@ This loss term basically encourages the model's predicted scores for the target 
 
 Unfortunately, despite seeming like a good idea on paper, switching to this loss function did not appear to provide any performance improvement.
 
-# Semi-Supervised Learning
+# Semi-supervised learning
 
-From this point on, a lot of the things I tried centred around *semi-supervised learning*. 
-[masters' thesis](http://www.scriptiesonline.uba.uva.nl/635970)
+From this point on, a lot of the things I tried centred around *semi-supervised learning* (SSL). Labeling data is a costly process, but unlabeled data is abundant. In SSL, we seek to benefit from unlabeled data by incorporating it into our model's training loss, alongside the labeled data. SSL was the focus of my [masters' thesis](http://www.scriptiesonline.uba.uva.nl/635970). 
 
-## 
+The FAT2019 competition seemed like a good place to apply SSL, given a dataset of around 20,000 more audio samples with 'noisy' labels was provided along with the 'curated' dataset.
+
+I tried quite a few SSL methods; I cover each below.
+
+## Virtual adversarial training
+
+Virtual adversarial training (VAT) is a SSL techinque that was [shown](https://arxiv.org/abs/1704.03976) to work very well in the image domain.
+
+### What is it?
+
+VAT is inspired by the idea of adversarial examples. It has been shown that, if we peer inside an image classifier, we can exploit it and make it misclassify an image by just making tiny changes to that image.
+
+In VAT, we try to generate such adversarial examples on-the-fly during training, and then update our network by saying that its prediction should not change in response to such small changes.
+
+This works as follows. We take an input image $X$. We then add some small value $\epsilon$ to $X$ such that our model's prediction is maximally changed on the new image $X + \epsilon$.

@@ -134,17 +134,17 @@ VAT is inspired by the idea of adversarial examples. It has been shown that, if 
 
 In VAT, we try to generate such adversarial examples on-the-fly during training, and then update our network by saying that its prediction should not change in response to such small changes.
 
-This works as follows. We take an input image \\X\\. We then add some small value \\\epsilon\\ to \\X\\ such that our model's prediction is maximally changed on the new image \\X + \epsilon\\.
+This works as follows. We take an input image \\(X\\). We then add some small value \\(\epsilon\\) to \\(X\\) such that our model's prediction is maximally changed on the new image \\(X + \epsilon\\).
 
-How do we find \\\epsilon\\, the 'image' to add to \\X\\ that maximally changes our models output prediction? First, we need to find the *adversarial direction*: the direction to move \\X\\ towards such that the model output is maximally changed.
+How do we find \\(\epsilon\\), the 'image' to add to \\(X\\) that maximally changes our models output prediction? First, we need to find the *adversarial direction*: the direction to move \\(X\\) towards such that the model output is maximally changed.
 
 To find the adversarial direction:
 
-1. We initliase a random-normal tensor \\r\\ with the same shape as \\X\\.
+1. We initliase a random-normal tensor \\(r\\) with the same shape as \\(X\\).
 
-2. We calculate the gradient of \\r\\ with respect to \\KL(f(X)|f(X+r))\\, where KL is the KL divergence.
+2. We calculate the gradient of \\(r\\) with respect to \\(KL(f(X)|f(X+r))\\), where KL is the KL divergence between the two model outputs.
 
 3. 
 
-Or, in math terms, how do we find \\\epsilon = argmax_{\epsilon} ||f(X) - f(X + \epsilon)||\\, such that \\||\epsilon|| < \alpha\\ where \\\alpha\\ is some maximum change tolerance parameter? In short, we approximate it by finding the 'adversarial direction' from \\X\\, and multiplying this by \\\alpha\\.
+Or, in math terms, how do we find \\(\epsilon = argmax_{\epsilon} ||f(X) - f(X + \epsilon)||\\), such that \\(||\epsilon|| < \alpha\\) where \\(\alpha\\) is some maximum change tolerance parameter? In short, we approximate it by finding the 'adversarial direction' from \\(X\\), and multiplying this by \\(\alpha\\).
 

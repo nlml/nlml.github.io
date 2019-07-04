@@ -13,7 +13,7 @@ image: images/fat/spectro.png
 
 The Freesound Audio Tagging 2019 (FAT2019) Kaggle competition just wrapped up. I didn't place too well (my submission was ranked around 144th out of 408 on the private leaderboard). But winning wasn't exactly my focus. I tried some interesting things and would like to share what I did, plus provide some explanations and code so others might be able to benefit from my work.
 
-This post starts with a brief overview of the competition itself. Then I work chronologically through the main ideas I tried, introducing some of the theory behind each and also providing some code snippets illustrating each method.
+This post starts with a brief overview of the competition itself. Then I work chronologically through the main ideas I tried, introducing some of the theory behind each. I also provide some code snippets illustrating each method.
 
 ## The competition
 
@@ -37,11 +37,11 @@ Like many other entrants, my starting point was a [public kernel](https://www.ka
 
 ## Skip connections
 
-I was able to get a big boost in score (~0.610 --> ~0.639) through simply adding [DenseNet](https://arxiv.org/abs/1608.06993)-like skip connections to this kernel. 
+I was able to get a big boost in score (~0.610 --> ~0.639) through simply adding [DenseNet](https://arxiv.org/abs/1608.06993)-like skip connections to this kernel. I implemented skip connections by concatenating each network layer's input with its output, prior to downsampling via average pooling.
 
 ### What is it?
 
-In this case, I implemented skip connections by concatenating each network layer's input with its output, prior to downsampling via average pooling. Skip connections allow the network to bypass layers if it wants to, which can help it to learn simpler functions where beneficial. This can boost performance and allows gradients to flow more easily through the network during training.
+Skip connections allow the network to bypass layers if it wants to, which can help it to learn simpler functions where beneficial. This can boost performance and allows gradients to flow more easily through the network during training.
 
 ### Implementation for FAT2019
 
@@ -61,7 +61,7 @@ def forward(self, input):
 
 ## Cosine annealing learning rate scheduling
 
-Another key feature of this kernel was **cosine annealing learning rate scheduling**. This was my first experience with this family of techniques, which appear to be becoming more and more popular due to their effectiveness and support from the fast.ai crowd.
+Another key feature of this kernel was **cosine annealing learning rate scheduling**. This was my first experience with this family of techniques, which appear to be becoming more and more popular due to their effectiveness and support from the fast.ai community.
 
 ### What is it?
 
@@ -69,19 +69,19 @@ In cosine annealing, the learning rate (LR) during training fluctuates between a
 
 ![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/cosine.png)
 
-*The learning rate (y-axis) used in training over epochs (x-axis) with cosine annealing*
+*The learning rate (y-axis) used in training over epochs (x-axis) when cosine annealing is enabled*
 
 The ideas behind cosine annealing LR were introduced in [this paper](https://arxiv.org/abs/1608.03983). Often, cosine annealing leads to two main benefits:
 
-- Training is faster - a lower loss is reached in a shorter amount of time
-- A better network is found - despite being faster to train, often the final model obtained produces better test set results than under traditional stochastic gradient descent (SGD)
+- Training is faster
+- A better final network is found - despite being faster to train, often the final model obtained produces better test set results than under traditional stochastic gradient descent (SGD)
 
 The main theory behind why cosine annealing (or SGD with restarts) leads to better results is well-explained in [this blog post](https://towardsdatascience.com/https-medium-com-reina-wang-tw-stochastic-gradient-descent-with-restarts-5f511975163). In short, there are two purported modes of action:
 
-- the periods with a large learning rate allow the model to 'jump' out of bad local optima to better ones
-- if a stable optimum is found that we *do not* jump out of when we return to a high learning rate, this optimum is likely more robust and general, and thus leads to better test performace.
+1. The periods with a large learning rate allow the model to 'jump' out of bad local optima to better ones.
+2. If a stable optimum is found that we *do not* jump out of when we return to a high learning rate, this optimum is likely more general and robust to shifts in the data distribution, and thus leads to better test performace.
 
-Cosine annealing to be seems to be a really effective techinque. I'm also curious to dive into other practices advocated by the fast.ai crowd, namely *[one cycle policies](https://towardsdatascience.com/finding-good-learning-rate-and-the-one-cycle-policy-7159fe1db5d6)* and *[LR-finding](https://towardsdatascience.com/estimating-optimal-learning-rate-for-a-deep-neural-network-ce32f2556ce0)*.
+Cosine LR annealing to be seems to be a really effective techinque. I'm also curious to dive into other practices advocated by the fast.ai crowd, namely *[one cycle policies](https://towardsdatascience.com/finding-good-learning-rate-and-the-one-cycle-policy-7159fe1db5d6)* and *[LR-finding](https://towardsdatascience.com/estimating-optimal-learning-rate-for-a-deep-neural-network-ce32f2556ce0)*.
 
 ### Implementation for FAT2019
 
@@ -99,32 +99,32 @@ scheduler = CosineAnnealingLR(
     optimizer, T_max=t_max, eta_min=min_lr)
 
 # Training loop
-	for epoch in range(num_epochs):
-		train_one_epoch()
-		scheduler.step()
+for epoch in range(num_epochs):
+	train_one_epoch()
+	scheduler.step()
 ```
 
 ## Hinge loss
 
-The metric for this competition was *lwlwrap* (an implementation of this metric can be found [here](https://www.kaggle.com/christoffer/lwlwrap)). Without going into too many details, it can be stated that lwlwrap works as a *ranking* metric. That is, it does not care what score you assign to the target tag(s), only that those scores are higher than the scores for all other tags.
+The metric for this competition was *lwlwrap* (an implementation of this metric can be found [here](https://www.kaggle.com/christoffer/lwlwrap)). Without going into too many details, it can be stated that lwlwrap works as a *ranking* metric. That is, it does not care what numerical score you assign to the target tag(s), only that that targets' scores are higher than the scores for any other tags.
 
-I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others (binary cross-entropy, on the other hand, is somewhat more constrained in terms of the domain of the output scores) I used Pytorch's [`MultiLabelMarginLoss`](https://pytorch.org/docs/stable/nn.html#multilabelmarginloss) to implement a hinge loss for this purpose. This loss is defined as:
+I theorised that using a hinge loss instead of binary cross-entropy might be more ideal for this task, since it too only cares that the scores for the target classes are higher than all others (binary cross-entropy, on the other hand, is somewhat more constrained in terms of the domain of the output scores). I used Pytorch's [`MultiLabelMarginLoss`](https://pytorch.org/docs/stable/nn.html#multilabelmarginloss) to implement a hinge loss for this purpose. This loss is defined as:
 
 $$
 \text{loss}(x, y) = \sum_{ij}\frac{\max(0, 1 - (x[y[j]] - x[i]))}{\text{x.size}(0)}
 $$
 
-This loss term basically encourages the model's predicted scores for the target labels to be at least 1.0 larger than every single non-target label.
+This basically encourages the model's predicted scores for the target labels to be at least 1.0 larger than every single non-target label.
 
-Unfortunately, despite seeming like a good idea on paper, switching to this loss function did not appear to provide any performance improvement.
+Unfortunately, despite seeming like a good idea on paper, switching to this loss function did not appear to provide any performance improvement in the competition.
 
 ## Semi-supervised learning
 
 From this point on, a lot of the things I tried centred around *semi-supervised learning* (SSL). Labeling data is a costly process, but unlabeled data is abundant. In SSL, we seek to benefit from unlabeled data by incorporating it into our model's training loss, alongside the labeled data. SSL was the focus of my [masters' thesis](http://www.scriptiesonline.uba.uva.nl/635970). 
 
-The FAT2019 competition seemed like a good place to apply SSL, given a dataset of around 20,000 more audio samples with 'noisy' labels was provided along with the 'curated' dataset.
+In the FAT2019 competition, we were provided with an additional training dataset of around 20,000 audio samples. The labels on this dataset were 'noisy', however, as they were labeled by users. This thus seemed to me like a good place to apply SSL, by just treating these additional samples as unlabeled.
 
-I tried quite a few SSL methods; I cover each below.
+I tried quite a few SSL methods on the competition data; I cover each of these below.
 
 ## Virtual adversarial training
 
@@ -132,7 +132,7 @@ Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://
 
 ![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/vat.png)
 
-*In VAT, we add small amounts of adversarial noise to images, then tell the model that predictions with these images should not change, despite the noise ([via](https://arxiv.org/abs/1704.03976))*
+*In VAT, we add small amounts of adversarial noise to images, then penalise our model for making different predictions on these images compared  to the original images ([source](https://arxiv.org/abs/1704.03976))*
 
 ### What is it?
 
@@ -146,7 +146,7 @@ To find the adversarial direction, we:
 
 1. Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
 
-2. Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X + \mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+2. Calculate the gradient of \\( \mathbf{r} \\) with respect to , where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
 3. The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 
@@ -171,9 +171,13 @@ output = model(data)
 loss = cross_entropy(output, target) + args.alpha * lds
 ```
 
-To use this repo for FAT2019 however, I needed to make a couple of changes to the implementation. The main problem is that the softmax + KL-divergence setup provided in that repo will not work in our multi-label context. To overcome this I removed the softmax, and replaced the KL-divergence loss between the new and old predictions with the binary cross-entropy loss. For more details, see the diffs between the [Pytorch VAT repo](https://github.com/lyakaap/VAT-pytorch/blob/master/vat.py#L60) and [my fork](https://github.com/nlml/freesoundkaggle/blob/master/vat_loss.py#L67).
+To use this repo for FAT2019 however, I needed to make a couple of changes to the implementation. The main problem is that it expects a classification model, so it uses softmax before the KL divergence over the classification distribution.
+
+In our case, we use binary cross-entropy to predict a separate distribution *for each* label, rather than a distribution *over* labels. To overcome this I replaced the softmax with a sigmoid (where needed), and replaced the KL-divergence loss between the new and old predictions with the binary cross-entropy loss. For details, see the diffs between the [Pytorch VAT repo](https://github.com/lyakaap/VAT-pytorch/blob/master/vat.py#L60) and [my fork](https://github.com/nlml/freesoundkaggle/blob/master/vat_loss.py#L67).
 
 ## Mixup and Mixmatch
+
+Another technique I (and many other Kagglers) played around with was [mixup](https://arxiv.org/abs/1710.09412). In mixup, 
 
 ## Mean teacher
 

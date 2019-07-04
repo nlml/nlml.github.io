@@ -146,7 +146,7 @@ To find the adversarial direction, we:
 
 1. Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
 
-2. Calculate the gradient of \\( \mathbf{r} \\) with respect to , where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+2. Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X), f(X + \mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
 3. The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 
@@ -177,7 +177,7 @@ In our case, we use binary cross-entropy to predict a separate distribution *for
 
 ## Mixup and Mixmatch
 
-Another technique I (and many other Kagglers) played around with was [mixup](https://arxiv.org/abs/1710.09412). In mixup, 
+Another technique I (and many other Kagglers) played around with was [mixup](https://arxiv.org/abs/1710.09412). In basic mixup, we combine two images \\( \mathbf{X}_1 \\) and \\( \mathbf{X}_2 \\) with a factor \\( \alpha \\) to become a single image, \\( \alpha \mathbf{X}_1 + (1 - \alpha) \mathbf{X}_2 \\)
 
 ## Mean teacher
 

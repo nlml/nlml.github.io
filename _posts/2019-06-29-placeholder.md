@@ -7,7 +7,7 @@ author: Liam Schoneveld
 image: images/fat/spectro.png
 ---
 
-![a spectrogram of an audio clip](/images/fat/spectro.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
 
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
@@ -67,7 +67,7 @@ Another key feature of this kernel was **cosine annealing learning rate scheduli
 
 In cosine annealing, the learning rate (LR) during training fluctuates between a minimum and maximum LR according to a cosine function. The LR is updated at the end of each epoch according to this function.
 
-![a spectrogram of an audio clip](/images/fat/cosine.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/cosine.png)
 
 *The learning rate (y-axis) used in training over epochs (x-axis) when cosine annealing is enabled*
 
@@ -130,7 +130,7 @@ I tried quite a few SSL methods on the competition data; I cover each of these b
 
 Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://arxiv.org/abs/1704.03976) to work very well in the image domain.
 
-![a spectrogram of an audio clip](/images/fat/vat.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/vat.png)
 
 *In VAT, we add small amounts of adversarial noise to images, then penalise our model for making different predictions on these images compared  to the original images ([source](https://arxiv.org/abs/1704.03976))*
 
@@ -179,14 +179,45 @@ In our case, we use binary cross-entropy to predict a separate distribution *for
 
 [Mean teacher](https://arxiv.org/abs/1703.01780) held the previous state of the art for SSL on CIFAR10 and other datasets, before being beaten by Mixmatch (which I descibe below). It is relatively simple to implement. Unfortunately though it seemed to produce little or no benefit for me in the competition.
 
-![a spectrogram of an audio clip](/images/fat/mean_teacher.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/mean_teacher.png)
 
 *An overview of the mean teacher approach to SSL. A student model learns on a combination of a labeled dataset, and the predictions made by an exponential moving average of its history (the teacher model)*
 
 ### What is it?
 
 
+
 ### Implementation
+
+```
+# We need to make a copy of our model to be the teacher
+ema_model = Classifier(num_classes=num_classes).cuda()
+
+# This function updates the teacher model with the student
+def update_ema_variables(model, ema_model, alpha, global_step):
+    # Use the true average until the exponential average is more correct
+    alpha = min(1 - 1 / (global_step + 1), alpha)
+    for ema_param, param in zip(ema_model.parameters(), model.parameters()):
+        ema_param.data.mul_(alpha).add_(1 - alpha, param.data)
+
+# ... in training loop
+for epoch in range(num_epochs)
+    # Update the teacher model
+    update_ema_variables(model, ema_model, alpha, global_step)
+
+    # Predict unsupervised batch (with augmentation) with the teacher
+    with torch.no_grad():
+        ema_model.eval()
+        teacher_pred = ema_model(unsup_data_aug1.cuda()
+        unsup_targ = torch.sigmoid(teacher_pred).data)
+
+    # Predict unsupervised batch (with different augmentation)
+    # with the student and add error to the loss
+    unsup_output = model(unsup_data_aug2.cuda())
+    loss_unsup = unsup_criterion(unsup_output, unsup_targ)
+    loss += loss_unsup * unsup_loss_weight
+```
+
 
 ## Mixup
 

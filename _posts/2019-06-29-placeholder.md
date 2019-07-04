@@ -181,11 +181,16 @@ In our case, we use binary cross-entropy to predict a separate distribution *for
 
 ![a spectrogram of an audio clip](/images/fat/mean_teacher.png)
 
-*An overview of the mean teacher approach to SSL. A student model learns on a combination of a labeled dataset, and the predictions made by an exponential moving average of its history (the teacher model)*
+*An overview of the mean teacher approach to SSL. A student model learns on a combination of a labeled dataset, and the predictions made by an exponential moving average of its history (the teacher model) ([source](https://github.com/CuriousAI/mean-teacher))*
 
 ### What is it?
 
+In semi-supervised mean teacher:
 
+- We keep two copies of our model - a *student* model, and a *teacher* model
+- Every *K* iterations (usually every epoch), we update our teacher model's weights as an exponentially moving average (EMA) of the student model's weights
+- The student model is trained as usual on the labeled data, but in addition:
+- We predict labels of our unlabeled data (plus random augmentation) using the teacher model. We then our student model for making different predictions on these same images (but with different random augmentation) to those predictions made by the teacher model.
 
 ### Implementation
 

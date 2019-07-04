@@ -81,13 +81,13 @@ The main theory behind why cosine annealing (or SGD with restarts) leads to bett
 1. The periods with a large learning rate allow the model to 'jump' out of bad local optima to better ones.
 2. If a stable optimum is found that we *do not* jump out of when we return to a high learning rate, this optimum is likely more general and robust to shifts in the data distribution, and thus leads to better test performace.
 
-Cosine LR annealing to be seems to be a really effective techinque. I'm also curious to dive into other practices advocated by the fast.ai crowd, namely *[one cycle policies](https://towardsdatascience.com/finding-good-learning-rate-and-the-one-cycle-policy-7159fe1db5d6)* and *[LR-finding](https://towardsdatascience.com/estimating-optimal-learning-rate-for-a-deep-neural-network-ce32f2556ce0)*.
+Cosine LR annealing to be seems to be a really effective technique. I'm also curious to dive into other practices advocated by the fast.ai crowd, namely *[one cycle policies](https://towardsdatascience.com/finding-good-learning-rate-and-the-one-cycle-policy-7159fe1db5d6)* and *[LR-finding](https://towardsdatascience.com/estimating-optimal-learning-rate-for-a-deep-neural-network-ce32f2556ce0)*.
 
 ### Implementation for FAT2019
 
 Pytorch contains a `CosineAnnealingLR` scheduler and we can see its usage mhiro2's kernel. Basically:
 
-```
+{% highlight python %}
 from torch.optim.lr_scheduler import CosineAnnealingLR
 max_lr = 3e-3  # Maximum LR
 min_lr = 1e-5  # Minimum LR
@@ -102,7 +102,7 @@ scheduler = CosineAnnealingLR(
 for epoch in range(num_epochs):
 	train_one_epoch()
 	scheduler.step()
-```
+{% endhighlight %}
 
 ## Hinge loss
 
@@ -163,13 +163,13 @@ Since this \\( loss_{\text{unsupervised}} \\) term does not depend on any label 
 
 There is a great Pytorch implementation of VAT on [github](https://github.com/lyakaap/VAT-pytorch). With this implementation, adding VAT to a model is simple:
 
-```
+{% highlight python %}
 vat_loss = VATLoss(xi=10.0, eps=1.0, ip=1)
 # ... in training loop ...
 lds = vat_loss(model, data)
 output = model(data)
 loss = cross_entropy(output, target) + args.alpha * lds
-```
+{% endhighlight %}
 
 To use this repo for FAT2019 however, I needed to make a couple of changes to the implementation. The main problem is that it expects a classification model, so it uses softmax before the KL divergence over the classification distribution.
 
@@ -192,9 +192,9 @@ In semi-supervised mean teacher:
 - The student model is trained as usual on the labeled data, but in addition:
 - We predict labels of our unlabeled data (plus random augmentation) using the teacher model. We then our student model for making different predictions on these same images (but with different random augmentation) to those predictions made by the teacher model.
 
-### Implementation
+### Implementation for FAT2019
 
-```
+{% highlight python %}
 # We need to make a copy of our model to be the teacher
 ema_model = Classifier(num_classes=num_classes).cuda()
 
@@ -214,6 +214,8 @@ for epoch in range(num_epochs)
     with torch.no_grad():
         ema_model.eval()
         teacher_pred = ema_model(unsup_data_aug1.cuda()
+        # We use sigmoid rather than softmax, as this is a
+        # multi-label tagging task, rather than classification
         unsup_targ = torch.sigmoid(teacher_pred).data)
 
     # Predict unsupervised batch (with different augmentation)
@@ -221,7 +223,7 @@ for epoch in range(num_epochs)
     unsup_output = model(unsup_data_aug2.cuda())
     loss_unsup = unsup_criterion(unsup_output, unsup_targ)
     loss += loss_unsup * unsup_loss_weight
-```
+{% endhighlight %}
 
 
 ## Mixup
@@ -232,6 +234,43 @@ Applying mixup to audio perhaps makes more sense, as it is quite natural to add 
 
 ## Mixmatch
 
-Mixmatch is an SSL technique 
+[Mixmatch](https://arxiv.org/abs/1905.02249) is an SSL technique from Google Research. It achieved relatively large gains in SSL performance on CIFAR10 and other benchmarks, beating already-impressive state-of-the-art performance of other techniques.
+
+![The Mixmatch labeling procedure](/images/fat/mixmatch.png)
+
+*(Mixmatch produces labels for unlabeled data points by averaging their predictions over many augmentations, and then *sharpening* this average prediction [source](https://arxiv.org/abs/1905.02249))*
+
+### What is it?
+
+In Mixmatch:
+
+- We make K augmentations of a given unlabeled image, then predict it with our model to get K predictions
+- We then average the K predictions to get a single prediction for that image
+- We then *sharpen* this average prediction, such that confident classes become more confident, and unconfident classes become even less confident
+- We then have labels for a batch of unlabeled data (plus our true labels for the batch of labeled data). We apply mixup over this whole set of labeled data, and train on it.
+
+### Implementation for FAT2019
+
+One difficulty with transferring this method to FAT2019, was that the idea of *sharpening* predictions is not as well-defined in the binary cross-entropy case. Since, as mentioned above, this is in fact a ranking problem, our model could still perform very well, even if only outputting very low confidence predictions for all classes.
+
+To sharpen in the binary cross-entropy setting, we essentially (either explicitly or implicitly) need to define some threshold at which we call a prediction 'confident', and increase its label in the sharpening, or 'unconfident', and decrease its label. A natural choice for this would be 0.5.
+
+Ultimately though, I could not get Mixmatch to perform well, and I think this may be due to the fact that many predictions are quite low confidence in the final-trained models, even though they represent the most confident class. Perhaps selecting the most confident classes and sharpening them by setting their labels to 1 would be a better approach.
+
+{% highlight python %}
+def sharpen(logit, T):
+    return torch.sigmoid(T * logit)
+
+def sharpened_guess(ub, model, K, T=0.5):
+    with torch.no_grad():
+        was_training = model.training
+        model.eval()
+        pr = torch.sigmoid(model(ub))  # shape = [B*K, 80]
+        guess = pr.view(K, pr.shape[0] // K, -1).mean(0).data
+        out = sharpen(guess, T).repeat([K, 1])
+        if was_training:
+            model.train()
+        return out
+{% endhighlight %}
 
 ## Ensembling and knowledge distillation

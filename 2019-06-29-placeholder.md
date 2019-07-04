@@ -7,7 +7,7 @@ author: Liam Schoneveld
 image: images/fat/spectro.png
 ---
 
-![a spectrogram of an audio clip](/images/fat/spectro.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
 
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
@@ -67,7 +67,7 @@ Another key feature of this kernel was **cosine annealing learning rate scheduli
 
 In cosine annealing, the learning rate (LR) during training fluctuates between a minimum and maximum LR according to a cosine function. The LR is updated at the end of each epoch according to this function.
 
-![a spectrogram of an audio clip](/images/fat/cosine.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/cosine.png)
 
 *The learning rate (y-axis) used in training over epochs (x-axis) when cosine annealing is enabled*
 
@@ -130,9 +130,9 @@ I tried quite a few SSL methods on the competition data; I cover each of these b
 
 Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://arxiv.org/abs/1704.03976) to work very well in the image domain.
 
-![a spectrogram of an audio clip](/images/fat/vat.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/vat.png)
 
-*In VAT, we add small amounts of adversarial noise to images, then tell the model that predictions with these images should not change, despite the noise ([via](https://arxiv.org/abs/1704.03976))*
+*In VAT, we add small amounts of adversarial noise to images, then penalise our model for making different predictions on these images compared  to the original images ([source](https://arxiv.org/abs/1704.03976))*
 
 ### What is it?
 
@@ -146,7 +146,7 @@ To find the adversarial direction, we:
 
 1. Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
 
-2. Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X) || f(X + \mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+2. Calculate the gradient of \\( \mathbf{r} \\) with respect to , where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
 
 3. The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 

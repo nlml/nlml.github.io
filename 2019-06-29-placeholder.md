@@ -7,13 +7,13 @@ author: Liam Schoneveld
 image: images/fat/spectro.png
 ---
 
-![a spectrogram of an audio clip](/images/fat/spectro.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
 
 *A spectrogram of of the audio clips in the FAT2019 competition*
 
 The Freesound Audio Tagging 2019 (FAT2019) Kaggle competition just wrapped up. I didn't place too well (my submission was ranked around 144th out of 408 on the private leaderboard). But winning wasn't exactly my focus. I tried some interesting things and would like to share what I did, plus provide some explanations and code so others might be able to benefit from my work.
 
-This post starts with a brief overview of the competition itself. Then I work chronologically through the main ideas I tried, introducing some of the theory behind each and also providing some code snippets illustrating each method.
+This post starts with a brief overview of the competition itself. Then I work chronologically through the main ideas I tried, introducing some of the theory behind each. I also provide some code snippets illustrating each method.
 
 ## The competition
 
@@ -67,7 +67,7 @@ Another key feature of this kernel was **cosine annealing learning rate scheduli
 
 In cosine annealing, the learning rate (LR) during training fluctuates between a minimum and maximum LR according to a cosine function. The LR is updated at the end of each epoch according to this function.
 
-![a spectrogram of an audio clip](/images/fat/cosine.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/cosine.png)
 
 *The learning rate (y-axis) used in training over epochs (x-axis) with cosine annealing*
 
@@ -130,7 +130,7 @@ I tried quite a few SSL methods; I cover each below.
 
 Virtual adversarial training (VAT) is an SSL techinque that was [shown](https://arxiv.org/abs/1704.03976) to work very well in the image domain.
 
-![a spectrogram of an audio clip](/images/fat/vat.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/vat.png)
 
 *In VAT, we add small amounts of adversarial noise to images, then tell the model that predictions with these images should not change, despite the noise ([via](https://arxiv.org/abs/1704.03976))*
 

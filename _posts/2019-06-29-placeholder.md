@@ -177,11 +177,15 @@ In our case, we use binary cross-entropy to predict a separate distribution *for
 
 ## Mean teacher
 
-Mean teacher held the previous state of the art for SSL on CIFAR10 and other datasets, before being beaten by Mixmatch (which I descibe below). It is relatively simple to implement, yet unfortunately seemed to produce little or no benefit for me in the competition.
+[Mean teacher](https://arxiv.org/abs/1703.01780) held the previous state of the art for SSL on CIFAR10 and other datasets, before being beaten by Mixmatch (which I descibe below). It is relatively simple to implement. Unfortunately though it seemed to produce little or no benefit for me in the competition.
 
-![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/mean_teacher.png)
 
-*An overview of the mean teacher approach to SSL*
+*An overview of the mean teacher approach to SSL. A student model learns on a combination of a labeled dataset, and the predictions made by an exponential moving average of its history (the teacher model)*
+
+### What is it?
+
+### Implementation
 
 ## Mixup
 

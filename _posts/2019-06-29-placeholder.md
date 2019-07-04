@@ -146,14 +146,14 @@ To find the adversarial direction, we:
 
 1. Initliase a random-normal tensor \\( \mathbf{r} \\) with the same shape as \\( X \\).
 
-2. Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X), f(X + \mathbf{r})) \\), where KL is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between the two model outputs.
+2. Calculate the gradient of \\( \mathbf{r} \\) with respect to \\( KL(f(X), f(X + \mathbf{r})) \\), where \\( KL(f(\textbullet), g(\textbullet)) \\) is the [Kullback-Liebler divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between two probability distribution functions \\( g(\textbullet)) \\) and \\( g(\textbullet)) \\).
 
 3. The normalised direction of this gradient is our adversarial direction, which we call \\( \mathbf{d} \\).
 
 Once we have \\( \mathbf{d} \\), we move \\( X \\) in that direction by some small scaling factor \\( \epsilon \\). We then add a term to our loss that penalises the difference in the model's predictions, i.e.:
 
 $$
-loss_{\text{unsupervised}}(X) = KL ( f(X) || f(X + \epsilon * \mathbf{r}) ) \\
+loss_{\text{unsupervised}}(X) = KL ( f(X), f(X + \epsilon * \mathbf{r}) ) \\
 loss = loss_{\text{supervised}}(X, y) + loss_{\text{unsupervised}}(X)
 $$
 
@@ -175,10 +175,22 @@ To use this repo for FAT2019 however, I needed to make a couple of changes to th
 
 In our case, we use binary cross-entropy to predict a separate distribution *for each* label, rather than a distribution *over* labels. To overcome this I replaced the softmax with a sigmoid (where needed), and replaced the KL-divergence loss between the new and old predictions with the binary cross-entropy loss. For details, see the diffs between the [Pytorch VAT repo](https://github.com/lyakaap/VAT-pytorch/blob/master/vat.py#L60) and [my fork](https://github.com/nlml/freesoundkaggle/blob/master/vat_loss.py#L67).
 
-## Mixup and Mixmatch
-
-Another technique I (and many other Kagglers) played around with was [mixup](https://arxiv.org/abs/1710.09412). In basic mixup, we combine two images \\( \mathbf{X}_1 \\) and \\( \mathbf{X}_2 \\) with a factor \\( \alpha \\) to become a single image, \\( \alpha \mathbf{X}_1 + (1 - \alpha) \mathbf{X}_2 \\)
-
 ## Mean teacher
+
+Mean teacher held the previous state of the art for SSL on CIFAR10 and other datasets, before being beaten by Mixmatch (which I descibe below). It is relatively simple to implement, yet unfortunately seemed to produce little or no benefit for me in the competition.
+
+![a spectrogram of an audio clip](/home/liam/nlml.github.io/images/fat/spectro.png)
+
+*An overview of the mean teacher approach to SSL*
+
+## Mixup
+
+Another technique I (and many other Kagglers) played around with was [mixup](https://arxiv.org/abs/1710.09412). In basic mixup, we combine two images \\( \mathbf{X}_1 \\) and \\( \mathbf{X}_2 \\) with a factor \\( \alpha \\) to become a single image, \\( \alpha \mathbf{X}_1 + (1 - \alpha) \mathbf{X}_2 \\). We then train on these combined images with combined labels \\( \alpha \mathbf{y}_1 + (1 - \alpha) \mathbf{y}_2 \\). Though it seems strange to 'combine' images like this, this seems to have a regularisation effect on models, and leads to better generalisation and results in general.
+
+Applying mixup to audio perhaps makes more sense, as it is quite natural to add pieces of audio together, at least in the frequency domain. In the spectral domain, I'm not sure if this is still so natural. Still, it was a popular technique in this technique that seemed to provide some performance boost.
+
+## Mixmatch
+
+Mixmatch is an SSL technique 
 
 ## Ensembling and knowledge distillation

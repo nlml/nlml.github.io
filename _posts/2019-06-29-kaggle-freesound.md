@@ -7,6 +7,8 @@ author: Liam Schoneveld
 image: images/fat/spectro.png
 ---
 
+*An overview of semi-supervised learning and other techniques I applied to a recent Kaggle competition.*
+
 ![a spectrogram of an audio clip](/images/fat/spectro.png)
 
 *A spectrogram of of the audio clips in the FAT2019 competition*
@@ -272,5 +274,3 @@ def sharpened_guess(ub, model, K, T=0.5):
             model.train()
         return out
 {% endhighlight %}
-
-## Ensembling and knowledge distillation

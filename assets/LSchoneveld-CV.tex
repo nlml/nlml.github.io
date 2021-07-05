@@ -1,4 +1,4 @@
-% LaTeX resume using res.cls
+ % LaTeX resume using res.cls
 
 \documentclass[margin]{res}
 
@@ -31,31 +31,38 @@
 	\begin{resume}
 		
 		
-		\section{EDUCATION} {\bf Master of Science (Artificial Intelligence)} \hfill 2015-2017\\
+		\section{EDUCATION} {\bf Master of Science (Artificial Intelligence)}: Cum Laude \hfill 2015-2017\\
 		The University of Amsterdam\\
-		{\sl Graduated Cum Laude}
+		{\sl IRP: Semi-Supervised Learning with Generative Adversarial Networks} (2017)
 		
 		{\bf Bachelor of Commerce (Liberal Studies)} \hfill 2009-2013\\
 		The University of Sydney\\
 		{\sl Majors in Economics and Econometrics}
 		
-		
 		\section{PROFESSIONAL \\ EXPERIENCE}
 		
-		{Lead Data Scientist,} {\bf Powder} \hfill Oct 2019-Present\vspace{2mm}\newline
-		Lead and implement the AI strategy at Powder:
+		{Lead AI Engineer,} {\bf Powder} (\$14.5m 2021 Series A) \hfill Oct 2019-Present\vspace{2mm}\newline
+		Manage Powder's AI team, define and implement the AI strategy:
 		\vspace{1mm}
 		\begin{itemize}
-			\item Research and develop Powder's videogame highlights detection system, which is highly scalable thanks to a unique (patent pending) approach applying self- and weakly-supervised learning to 1000s of hours of videogame footage.
-			\item Active role in recruiting and onboarding new AI talent, communicating needs and results to management, and explaining Powder's AI strategy to investors.
-			\item Lead Powder's research collaboration with Dr.  Alice Othmani at Universit\'e Paris-Est Cr\'eteil (UPEC), focusing on audiovisual emotion recognition.
+			\item Designed and developed model training and deployment pipelines for two key product features: detecting which videogame is being played, then detecting highlights or exciting moments in the gameplay footage. These models run in real-time, and on-device.
+			\item Manage the day-to-day workflow of the AI team; ensure effective intra- and cross-team communication.
+			\item Research collaboration with Dr.  Alice Othmani at Universit\'e Paris-Est Cr\'eteil (UPEC); first author on two published papers (see Publications).
+			\item Research into self-supervised learning for highlights detection led to an order of magnitude reduction in the amount of labels required for training models.
+			\item Technical topics include: deep learning for object detection, classification, video highlighting, facial expression recognition, MLops, deployment to edge devices, model quantisation and pruning, self-supervised learning, etc.
 		\end{itemize}
 		
-		{Data Scientist,} {\bf Pandascore} \hfill 2017-2019
+		{Data Scientist,} {\bf Pandascore} (\$2.8m 2017 Seed Round) \hfill 2017-2019
 		\vspace{1mm}
 		\begin{itemize}
-			\item Developing and deploying computer vision models for real-time events and stats detection in e-sports (professional video games) tournaments.
+			\item Developing and deploying computer vision models for real-time events and stats detection in e-sports tournaments.
 			\item Training and deploying machine learning models using these computer vision-derived data to predict match outcomes in real time.
+			\item Key projects:
+			\begin{itemize}
+				\item Detecting hero positions on the League of Legends minimap in real time (plus auto-retraining and deployment when new heroes are released).
+				\item Probabilistic inference to calculate and optimize betting odds in real time over all possible outcomes in an ongoing Overwatch match.
+				\item Using GANs to synthetically generate training data of new heroes in Overwatch before any `real' training data was available.
+			\end{itemize}
 			\item Contributing to growth, product strategy and recruitment efforts.
 		\end{itemize}
 		
@@ -80,6 +87,15 @@
 		Schoneveld, L. \& Othmani A. 
 		\textit{Towards a General Deep Feature Extractor for Facial Expression Recognition}. 28th IEEE International Conference on Image Processing (IEEE - ICIP) (2021).
 		
+		\section{PROGRAMMING\\LANGUAGES}
+		\begin{itemize}
+			\item Python data science / ML stack (numpy, sklearn, pandas, matplotlib, etc.)
+			\item Deep learning libraries (Pytorch, Tensorflow, Keras, Theano)
+			\item MLops, ML pipeline reproducability, ML model deployment to multiple frameworks (Apple coreml, tflite, tools like dvc, Docker)
+			\item Google Cloud, AWS, Microsoft Azure
+			\item Unix/Linux, SQL, Git, R, Matlab, C++, Java, HTML, CSS, JavaScript, Julia.
+		\end{itemize}
+		
 		\section{OTHER \\ ACHIEVEMENTS}
 		
 		\begin{itemize}
@@ -88,30 +104,11 @@
 			\item Ongoing: Answer questions on StackOverflow, see:\\stackoverflow.com/u/6167850 \& stats.stackexchange.com/users/112095
 			\item 2018: Presented at Meetup Computer Vision Paris, presentation titled:\\ \emph{Tracking Player Positions on the League of Legends Minimap}
 			\item 2018: Participated in the 2018 Amsterdam Dance Event Hackathon (worked in a team to build a deep learning-based reverse image search application)
-			\item 2018: Participated in the Kaggle TensorFlow Speech Recognition Challenge
-			\item 2017: Graduated {\it Cum Laude} from the MSc Artificial Intelligence program at the University of Amsterdam
-			\item 2017: Received an 8/10 for my MSc AI thesis: {\it Semi-Supervised Learning with GANs}, supervised by Prof. Dr. Max Welling and Taco S. Cohen
 			\item 2016: Placed 1st out of 50 student groups in a Kaggle-style machine learning competition as part of the UvA/VU course \textit{Data Mining Techniques}
 			\item 2015: Placed 17th out of 985 participants in Kaggle's {\sl Facebook Recruiting IV: Human or Robot?} data science competition
 			\item 2013: Placed 2nd out of 108 students in the \textit{Operations Management} course at the University of Sydney
 			\item 2010: Awarded two separate International Exchange Scholarships by the University of Sydney, based on academic merit
-			\item 2008: Placed 7th of 2730 students in Higher School Certificate course {\sl Software Design and Development.}
-		\end{itemize}
-		
-		\section{SKILLS AND \\ STRENGTHS}
-		{\it General skills:}\vspace{3mm}
-		\begin{itemize}
-			\item Broad knowledge in fields relating to machine learning, statistics, computer science and economics, obtained both academically and professionally
-			\item Writing skills; able to concisely convey ideas to diverse audiences
-			\item Communication ability; thrive in a team environment.
-		\end{itemize}
-		{\it Programming languages/software experience:}\vspace{3mm}
-		\begin{itemize}
-			\item Python data science / ML stack (numpy, sklearn, pandas, matplotlib, etc.)
-			\item Deep learning libraries (Pytorch, Tensorflow, Keras, Theano)
-			\item MLops, ML pipeline reproducability, ML model deployment to multiple frameworks (Apple coreml, tflite, tools like dvc, Docker)
-			\item Strong experience with Unix/Linux, databases (namely PostgreSQL), Git, R, VBA, Matlab, \LaTeX, Microsoft Office
-			\item Experience with Java, C++, HTML, CSS, JavaScript, Julia.
+			\item 2008: Placed 7th of 2730 students in Australian Higher School Certificate course {\sl Software Design and Development.}
 		\end{itemize}
 		
 	\end{resume}

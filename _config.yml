@@ -76,7 +76,7 @@ analytics :
   gauges :
       site_id : 'nlml'
   google : 
-      tracking_id : 'UA-64069536-1'
+      tracking_id : 'G-EBQEWD3TX1'
 
 
 # Site Author

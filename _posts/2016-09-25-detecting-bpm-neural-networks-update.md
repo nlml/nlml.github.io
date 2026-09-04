@@ -3,6 +3,7 @@ title: "Detecting Music BPM using Neural Networks - Update"
 category : neural-networks
 tagline: ""
 tags : [neural-networks, python, audio]
+image: images/bpm2/train_1.png
 ---
 
 This post is a brief update to my [previous post](https://nlml.github.io/neural-networks/detecting-bpm-neural-networks/) about using a neural network to detect the beats per minute (BPM) in short sections of audio.

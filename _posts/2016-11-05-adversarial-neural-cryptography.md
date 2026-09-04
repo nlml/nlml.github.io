@@ -3,6 +3,7 @@ title: "Adversarial Neural Cryptography in Theano"
 category : neural-networks
 tagline: ""
 tags : [neural-networks, python, theano]
+image: images/crypt/fig1.png
 ---
 
 Last week I read Abadi and Andersen's recent paper [[1]](#cite1), [*Learning to Protect Communications with Adversarial Neural Cryptography*](https://arxiv.org/pdf/1610.06918v1.pdf). I thought the idea seemed pretty cool and that it wouldn't be too tricky to implement, and would also serve as an ideal project to learn a bit more Theano. This post describes the paper, [my implementation](https://github.com/nlml/adversarial-neural-crypt), and the results.

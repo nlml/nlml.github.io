@@ -88,9 +88,77 @@
    ========================================================================== */
 
 .list__item {
+  margin-bottom: 2em;
 
   .page__meta {
     margin: 0 0 4px;
+  }
+
+  .archive__item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5em;
+
+    .archive__item-body {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .archive__item-title {
+      margin-top: 0;
+      margin-bottom: 0.35em;
+    }
+
+    .archive__item-excerpt {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .archive__item-teaser {
+      flex: 0 0 180px;
+      width: 180px;
+      margin: 0;
+      border-radius: $border-radius;
+      overflow: hidden;
+      aspect-ratio: 1.91 / 1;
+      background-color: #f2f3f5;
+
+      a {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.25s ease;
+      }
+    }
+
+    &:hover {
+      .archive__item-teaser img {
+        transform: scale(1.04);
+      }
+    }
+  }
+
+  @media (max-width: 580px) {
+    .archive__item {
+      flex-direction: column-reverse;
+      gap: 0.85em;
+
+      .archive__item-teaser {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+        aspect-ratio: 1.91 / 1;
+      }
+    }
   }
 }
 

@@ -3,6 +3,7 @@ title: "Detecting Music BPM using Neural Networks"
 category : neural-networks
 tagline: ""
 tags : [neural-networks, python, audio]
+image: images/input_spectogram_and_output_pulses.png
 ---
 
 I have always wondered whether it would be possible to detect the tempo (or beats per minute, or BPM) of a piece of music using a neural network-based approach. After a small experiment a while back, I decided to make a more serious second attempt. Here's how it went.

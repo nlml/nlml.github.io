@@ -3,6 +3,7 @@ title: "Using Tensorboard Embeddings Visualiser with Numpy Arrays"
 category : tensorflow
 tagline: ""
 tags : [neural-networks, python, tensorflow, dimensionality-reduction]
+image: images/embs/embeddings-visualiser.png
 ---
 
 Tensorboard's [embeddings visualiser](https://www.tensorflow.org/get_started/embedding_viz) is great. You can use it to visualise and explore any set of high dimensional vectors (say, the activations of a hidden layer of a neural net) in a lower-dimensional space.

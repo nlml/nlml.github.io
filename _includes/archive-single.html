@@ -1,7 +1,17 @@
 {% if post.header.teaser %}
   {% capture teaser %}{{ post.header.teaser }}{% endcapture %}
+{% elsif post.image %}
+  {% capture teaser %}{{ post.image }}{% endcapture %}
 {% else %}
   {% assign teaser = site.teaser %}
+{% endif %}
+
+{% if teaser %}
+  {% if teaser contains "://" %}
+    {% assign teaser_url = teaser %}
+  {% else %}
+    {% assign teaser_url = teaser | prepend: "/" | replace: "//", "/" | relative_url %}
+  {% endif %}
 {% endif %}
 
 {% if post.id %}
@@ -14,25 +24,30 @@
   <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
     {% if include.type == "grid" and teaser %}
       <div class="archive__item-teaser">
-        <img src=
-          {% if teaser contains "://" %}
-            "{{ teaser }}"
-          {% else %}
-            "{{ teaser | absolute_url }}"
-          {% endif %}
-          alt="">
+        <a href="{{ post.url | absolute_url }}" rel="permalink">
+          <img src="{{ teaser_url }}" alt="">
+        </a>
       </div>
     {% endif %}
-    <h2 class="archive__item-title" itemprop="headline">
-      {% if post.link %}
-        <a href="{{ post.link }}">{{ title }}</a> <a href="{{ post.url | absolute_url }}" rel="permalink"><i class="fa fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
-      {% else %}
-        <a href="{{ post.url | absolute_url }}" rel="permalink">{{ title }}</a>
+    <div class="archive__item-body">
+      <h2 class="archive__item-title" itemprop="headline">
+        {% if post.link %}
+          <a href="{{ post.link }}">{{ title }}</a> <a href="{{ post.url | absolute_url }}" rel="permalink"><i class="fa fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+        {% else %}
+          <a href="{{ post.url | absolute_url }}" rel="permalink">{{ title }}</a>
+        {% endif %}
+      </h2>
+      {% if post.read_time %}
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> {% include read-time.html %}</p>
       {% endif %}
-    </h2>
-    {% if post.read_time %}
-      <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> {% include read-time.html %}</p>
+      {% if post.excerpt %}<p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify | strip_html | truncate: 160 }}</p>{% endif %}
+    </div>
+    {% if include.type != "grid" and teaser %}
+      <div class="archive__item-teaser">
+        <a href="{{ post.url | absolute_url }}" rel="permalink">
+          <img src="{{ teaser_url }}" alt="">
+        </a>
+      </div>
     {% endif %}
-    {% if post.excerpt %}<p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify | strip_html | truncate: 160 }}</p>{% endif %}
   </article>
 </div>

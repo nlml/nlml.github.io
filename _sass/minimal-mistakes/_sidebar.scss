@@ -122,6 +122,10 @@
   padding-right: 25px;
   line-height: 1;
 
+  &:first-child {
+    padding-left: 0;
+  }
+
   @include breakpoint($large) {
     display: block;
     width: 100%;

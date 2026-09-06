@@ -8,8 +8,36 @@
     <script src="{{ script_path }}"></script>
   {% endfor %}
 {% else %}
-  <script src="{{ '/assets/js/main.min.js' | absolute_url }}"></script>
+  <script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
 {% endif %}
 
 {% include analytics.html %}
 {% include /comments-providers/scripts.html %}
+
+<script>
+  (function() {
+    var toggleBtn = document.getElementById('theme-toggle');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function() {
+        var currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+    }
+
+    if (window.matchMedia) {
+      var mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      var handleThemeChange = function(e) {
+        if (!localStorage.getItem('theme')) {
+          document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        }
+      };
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', handleThemeChange);
+      } else if (mediaQuery.addListener) {
+        mediaQuery.addListener(handleThemeChange);
+      }
+    }
+  })();
+</script>

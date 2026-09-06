@@ -1,0 +1,622 @@
+/* ==========================================================================
+   Dark Theme & Theme Toggle
+   ========================================================================== */
+
+/* Theme Toggle Button & Masthead Alignment */
+.masthead__inner-wrap {
+    align-items: center;
+}
+
+.masthead__menu {
+    flex: 1;
+    min-width: 0;
+}
+
+.theme-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    margin-left: 0.75rem;
+    flex-shrink: 0;
+    z-index: 20;
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid rgba(64, 81, 78, 0.25);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    color: #40514e;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+
+    &:hover {
+        color: #11999e;
+        border-color: #11999e;
+        background: #ffffff;
+        transform: rotate(15deg) scale(1.08);
+        box-shadow: 0 2px 8px rgba(17, 153, 158, 0.25);
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px rgba(17, 153, 158, 0.4);
+    }
+
+    svg {
+        display: block;
+        pointer-events: none;
+        transition: transform 0.3s ease;
+    }
+
+    .theme-icon-moon {
+        display: block;
+    }
+
+    .theme-icon-sun {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Overrides
+   ========================================================================== */
+
+html[data-theme="dark"] {
+    background-color: #252a34;
+
+    /* Theme Toggle in Dark Mode */
+    .theme-toggle {
+        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.06);
+        color: #ffd166;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+        &:hover {
+            color: #ffe066;
+            border-color: #00adb5;
+            background: rgba(0, 173, 181, 0.15);
+            transform: rotate(45deg) scale(1.08);
+            box-shadow: 0 0 12px rgba(255, 209, 102, 0.35);
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 2px rgba(0, 173, 181, 0.4);
+        }
+
+        .theme-icon-moon {
+            display: none;
+        }
+
+        .theme-icon-sun {
+            display: block;
+        }
+    }
+
+    /* Text Selection Highlight */
+    &::selection,
+    & ::selection,
+    *::selection {
+        background: #00adb5 !important;
+        color: #ffffff !important;
+    }
+
+    &::-moz-selection,
+    & ::-moz-selection,
+    *::-moz-selection {
+        background: #00adb5 !important;
+        color: #ffffff !important;
+    }
+
+    /* Base Elements */
+    body {
+        background-color: #252a34;
+        color: #eaeaea;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #eaeaea;
+    }
+
+    p,
+    li,
+    dl {
+        color: #eaeaea;
+    }
+
+    a {
+        color: #00adb5;
+
+        &:hover,
+        &:active {
+            color: #8fc5c7;
+        }
+
+        &:visited {
+            color: #6b9495;
+        }
+    }
+
+    hr {
+        border-top-color: #383d47;
+    }
+
+    blockquote {
+        color: #c0c6ce;
+        border-left-color: #00adb5;
+    }
+
+    /* Tables */
+    table {
+        border-color: #383d47;
+
+        th,
+        td {
+            border-color: #383d47;
+        }
+
+        thead {
+            background-color: #1f242c;
+            color: #eaeaea;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #2b303c;
+        }
+    }
+
+    /* Masthead & Navigation */
+    .masthead {
+        background-color: #252a34;
+        border-bottom-color: #383d47;
+    }
+
+    .greedy-nav {
+        background: #252a34;
+
+        .site-title {
+            color: #eaeaea;
+
+            &:hover {
+                color: #00adb5;
+            }
+        }
+
+        .visible-links {
+            a {
+                color: #eaeaea;
+
+                &:hover {
+                    color: #00adb5;
+                }
+
+                &:before {
+                    background: #00adb5;
+                }
+            }
+        }
+
+        button {
+            background-color: #00adb5;
+        }
+
+        .hidden-links {
+            background: #252a34;
+            border-color: #383d47;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+            &:before {
+                border-color: #383d47 transparent;
+            }
+
+            a {
+                color: #eaeaea;
+
+                &:hover {
+                    color: #00adb5;
+                    background: #1f242c;
+                }
+            }
+        }
+    }
+
+    /* Author Profile & Sidebar */
+    .sidebar {
+        .author__avatar img {
+            border-color: #383d47;
+        }
+
+        .author__name {
+            color: #eaeaea;
+        }
+
+        .author__bio {
+            color: #b0b8c4;
+        }
+
+        .author__urls {
+            a {
+                color: #b0b8c4;
+
+                &:hover {
+                    color: #00adb5;
+                }
+            }
+
+            &.social-icons .fa {
+                color: inherit;
+            }
+        }
+
+        .nav__title {
+            background: #1f242c;
+            color: #eaeaea;
+        }
+
+        .nav__sub-title {
+            color: #9ba3af;
+            border-bottom-color: #383d47;
+        }
+    }
+
+    /* Archive & Post Listings */
+    .archive {
+        a {
+            color: inherit;
+        }
+
+        .archive__subtitle {
+            color: #9ba3af;
+            border-bottom-color: #383d47;
+        }
+
+        .archive__item-title {
+            color: #eaeaea;
+
+            a {
+                color: #eaeaea;
+
+                &:hover {
+                    color: #00adb5;
+                }
+            }
+        }
+
+        .archive__item-excerpt {
+            color: #b0b8c4;
+        }
+
+        .archive__item-teaser {
+            border-color: #383d47;
+        }
+    }
+
+    .page__title {
+        color: #eaeaea;
+    }
+
+    .page__meta {
+        color: #9ba3af;
+
+        a {
+            color: #9ba3af;
+        }
+    }
+
+    .page__taxonomy-item {
+        color: #b0b8c4;
+    }
+
+    .page__taxonomy {
+        a {
+            color: #00adb5;
+        }
+    }
+
+    /* Figure, Image & Video Captions (including inline-styled captions) */
+    figure figcaption,
+    figcaption,
+    .caption,
+    div[style*="font-style: italic"],
+    p[style*="font-style: italic"],
+    div[style*="color: #777"],
+    div[style*="color:#777"],
+    p[style*="color: #777"],
+    p[style*="color:#777"] {
+        color: #fff8e1 !important;
+
+        em,
+        i {
+            color: #fef3d5 !important;
+            font-style: italic;
+        }
+
+        strong,
+        b {
+            color: #fef3d5 !important;
+        }
+
+        a {
+            color: #00adb5 !important;
+
+            &:hover {
+                color: #8fc5c7 !important;
+            }
+        }
+    }
+
+    /* Code & Syntax Highlighting */
+    p>code,
+    a>code,
+    li>code,
+    figcaption>code,
+    td>code {
+        background: #1f242c;
+        border-color: #383d47;
+        color: #f0f6fc;
+        box-shadow: none;
+    }
+
+    div.highlighter-rouge,
+    figure.highlight {
+        background-color: #1f242c;
+        border-color: #383d47;
+        box-shadow: none;
+
+        &:before {
+            background-color: #383d47;
+            color: #eaeaea;
+        }
+
+        .highlight {
+            background: #1f242c;
+            color: #f0f6fc;
+        }
+
+        table td.gutter {
+            color: #626c79;
+        }
+
+        pre {
+            color: #f0f6fc !important;
+        }
+    }
+
+    /* Dark Code Token Colors */
+    .highlight {
+        color: #f0f6fc !important;
+
+        pre {
+            color: #f0f6fc !important;
+        }
+
+        /* Default tokens & variables / names */
+        .n,
+        .nx,
+        .l,
+        .w {
+            color: #f0f6fc !important;
+        }
+
+        /* Default text, names, variables, literals */
+        .nn {
+            color: #f0f6fc !important;
+        }
+
+        /* Namespace (e.g. np) */
+        .p {
+            color: #c9d1d9 !important;
+        }
+
+        /* Punctuation */
+
+        /* Comments */
+        .c,
+        .cm,
+        .c1,
+        .cs {
+            color: #8b949e !important;
+            font-style: italic;
+        }
+
+        /* Keywords */
+        .k,
+        .kd,
+        .kn,
+        .kp,
+        .kr,
+        .kt {
+            color: #ff7b72 !important;
+            font-weight: bold;
+        }
+
+        /* Strings */
+        .s,
+        .s1,
+        .s2,
+        .sb,
+        .sc,
+        .sd,
+        .se,
+        .sh,
+        .si,
+        .sx {
+            color: #7ee787 !important;
+        }
+
+        /* Numbers & Constants */
+        .m,
+        .mf,
+        .mh,
+        .mi,
+        .mo,
+        .il,
+        .kc {
+            color: #79c0ff !important;
+        }
+
+        /* Builtins / Functions / Classes */
+        .nb,
+        .nc,
+        .nf,
+        .na,
+        .no,
+        .nd,
+        .ni,
+        .ne,
+        .nl,
+        .py {
+            color: #d2a8ff !important;
+        }
+
+        /* Operators */
+        .o,
+        .ow {
+            color: #ff7b72 !important;
+        }
+
+        /* Variables / Tags */
+        .nt,
+        .nv,
+        .vc,
+        .vg,
+        .vi,
+        .bp {
+            color: #79c0ff !important;
+        }
+
+        /* Headings & Diffs */
+        .gh,
+        .gu {
+            color: #79c0ff !important;
+            font-weight: bold;
+        }
+
+        .gd {
+            color: #ffa198 !important;
+            background-color: #490202;
+        }
+
+        .gi {
+            color: #7ee787 !important;
+            background-color: #04260f;
+        }
+
+        .ge {
+            font-style: italic;
+        }
+
+        .gs {
+            font-weight: bold;
+        }
+    }
+
+    /* Notices */
+    .notice {
+        background-color: #1f242c;
+        border-color: #383d47;
+
+        &--primary {
+            background-color: mix(#000, #00adb5, 80%);
+            border-color: #00adb5;
+        }
+
+        &--info {
+            background-color: mix(#000, #52adc8, 80%);
+            border-color: #52adc8;
+        }
+
+        &--warning {
+            background-color: mix(#000, #f89406, 80%);
+            border-color: #f89406;
+        }
+
+        &--danger {
+            background-color: mix(#000, #ee5f5b, 80%);
+            border-color: #ee5f5b;
+        }
+
+        &--success {
+            background-color: mix(#000, #62c462, 80%);
+            border-color: #62c462;
+        }
+    }
+
+    /* Forms */
+    input,
+    textarea,
+    select {
+        background-color: #1f242c;
+        border-color: #383d47;
+        color: #eaeaea;
+
+        &:focus {
+            border-color: #00adb5;
+            outline: none;
+        }
+    }
+
+    /* Breadcrumbs & Pagination */
+    .breadcrumbs {
+        color: #9ba3af;
+
+        a {
+            color: #00adb5;
+        }
+
+        .current {
+            color: #eaeaea;
+        }
+    }
+
+    .pagination {
+        li a {
+            background-color: #252a34;
+            border-color: #383d47;
+            color: #eaeaea;
+
+            &:hover {
+                background-color: #1f242c;
+                color: #00adb5;
+            }
+
+            &.current {
+                background-color: #00adb5;
+                color: #fff;
+            }
+        }
+    }
+
+    /* Footer */
+    .page__footer {
+        background-color: #1a1d24;
+        color: #9ba3af !important;
+        border-top: 1px solid #383d47;
+
+        a {
+            color: #9ba3af;
+
+            &:hover {
+                color: #00adb5;
+            }
+        }
+
+        .fa {
+            color: #9ba3af;
+        }
+
+        .page__footer-follow .social-icons .fa {
+            color: inherit;
+        }
+    }
+}

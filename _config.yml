@@ -72,11 +72,7 @@ social:
 
 # Analytics
 analytics :
-  provider : google
-  gauges :
-      site_id : 'nlml'
-  google : 
-      tracking_id : 'G-EBQEWD3TX1'
+  provider : "simpleanalytics"
 
 
 # Site Author

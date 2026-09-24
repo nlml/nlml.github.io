@@ -11,12 +11,6 @@
 
 <html lang="{{ site.locale | slice: 0,2 | default: "en" }}" class="no-js">
 
-  {% if page.image %}
-    <meta content="http://nlml.github.io/{{ page.image }}" property="og:image">
-  {% else %}
-    <meta content="http://nlml.github.io/images/nlml.png" property="og:image">
-  {% endif %}
-
   <head>
     {% include head.html %}
     {% include head/custom.html %}

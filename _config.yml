@@ -79,7 +79,7 @@ analytics :
 author:
   name             : "liam schoneveld"
   avatar           : "images/bio-photo.jpg"
-  bio              : "thoughts on machine learning"
+  bio              : "Computer vision, 3D, and generative models"
   location         : "Tokyo, Japan"
   email            :
   uri              :

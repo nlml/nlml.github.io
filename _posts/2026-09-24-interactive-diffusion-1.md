@@ -16,7 +16,6 @@ header:
   <source src="/images/interactive-diffusion-1/drive-diff-model.mp4" type="video/mp4">
 </video>
 <div style="text-align: center; font-style: italic; margin-top: -0.5em; margin-bottom: 1.5em; color: #777;">
-  Playing our action-conditioned video diffusion model in real-time.
 </div>
 
 ## Background

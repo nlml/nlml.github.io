@@ -7,7 +7,7 @@ author: Liam Schoneveld
 image: images/interactive-diffusion-1/thumbnail.png
 ---
 
-*In this post, we explore building an interactive video diffusion model from scratch.* 
+*Building an interactive video diffusion model from scratch.* 
 
 <video autoplay loop muted playsinline poster="/images/interactive-diffusion-1/poster.jpg" style="width: 100%; max-width: 580px; display: block; margin: 1.5em auto; border-radius: 6px;">
   <source src="/images/interactive-diffusion-1/drive-diff-model.mp4" type="video/mp4">

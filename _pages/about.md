@@ -8,7 +8,7 @@ Hi!
 
 I’m a computer vision researcher and engineer at Woven by Toyota in Tokyo, originally from Sydney, Australia. I work on 3D vision, generative models, and neural rendering approaches.
 
-I’m particularly interested in taking research all the way from an initial idea to something that actually works in practice — from problem formulation and model design through implementation, experimentation, and production deployment.
+I’m particularly interested in taking research all the way from an initial idea to something that actually works in practice.
 
 Much of my recent work has focused on photorealistic 3D humans, including avatar reconstruction, neural rendering, and real-time tracking. More broadly, I’m interested in generative modelling, representation learning, self-supervised learning, and artificial intelligence.
 

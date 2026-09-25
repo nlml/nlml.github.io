@@ -18,6 +18,8 @@ header:
 <div style="text-align: center; font-style: italic; margin-top: -0.5em; margin-bottom: 1.5em; color: #777;">
 </div>
 
+> Just want to drive the model? Head over to the [GitHub repo](https://github.com/nlml/interactive-diffusion) for the code and instructions.
+
 ## Background
 
 *"World Models"* has become a bit of an overloaded buzzword lately. Depending on who you ask, it might refer to:

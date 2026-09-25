@@ -207,7 +207,12 @@ html[data-theme="dark"] {
         }
 
         button {
-            background-color: #00adb5;
+            color: #eaeaea;
+            background-color: #252a34;
+
+            &:hover {
+                color: #00adb5;
+            }
         }
 
         .hidden-links {

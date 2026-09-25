@@ -2,7 +2,7 @@
 title: "Demystifying World Models: A Playable Diffusion Model"
 category : "generative-models"
 tagline: "A minimal approach to building an action-conditioned video diffusion model, that you can play in real time."
-description: "Building an interactive video diffusion model from scratch that you can drive in real time, featuring causal KV caching and context noise augmentation."
+description: "Building an interactive video diffusion model from scratch that you can drive in real time."
 tags : [neural-networks, video, diffusion, interactive, generative-models]
 author: Liam Schoneveld
 image: images/interactive-diffusion-1/thumbnail.png

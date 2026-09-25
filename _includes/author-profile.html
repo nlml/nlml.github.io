@@ -67,6 +67,42 @@
         </li>
       {% endif %}
 
+      {% if author.google_scholar %}
+        <li>
+          <a href="{{ author.google_scholar }}" itemprop="sameAs">
+            <i class="fa fa-fw fa-graduation-cap" aria-hidden="true"></i> Scholar
+          </a>
+        </li>
+      {% elsif site.author.google_scholar %}
+        <li>
+          <a href="{{ site.author.google_scholar }}" itemprop="sameAs">
+            <i class="fa fa-fw fa-graduation-cap" aria-hidden="true"></i> Scholar
+          </a>
+        </li>
+      {% else %}
+        <li>
+          <a href="https://scholar.google.com/citations?user=MwW14DUAAAAJ" itemprop="sameAs">
+            <i class="fa fa-fw fa-graduation-cap" aria-hidden="true"></i> Scholar
+          </a>
+        </li>
+      {% endif %}
+
+      {% if author.github %}
+        <li>
+          <a href="https://github.com/{{ author.github }}" itemprop="sameAs">
+            <i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub
+          </a>
+        </li>
+      {% endif %}
+
+      {% if author.linkedin %}
+        <li>
+          <a href="https://www.linkedin.com/in/{{ author.linkedin }}" itemprop="sameAs">
+            <i class="fa fa-fw fa-linkedin-square" aria-hidden="true"></i> LinkedIn
+          </a>
+        </li>
+      {% endif %}
+
       {% if author.twitter %}
         <li>
           <a href="https://twitter.com/{{ author.twitter }}" itemprop="sameAs">
@@ -87,14 +123,6 @@
         <li>
           <a href="https://plus.google.com/+{{ author.google_plus }}" itemprop="sameAs">
             <i class="fa fa-fw fa-google-plus-square" aria-hidden="true"></i> Google+
-          </a>
-        </li>
-      {% endif %}
-
-      {% if author.linkedin %}
-        <li>
-          <a href="https://www.linkedin.com/in/{{ author.linkedin }}" itemprop="sameAs">
-            <i class="fa fa-fw fa-linkedin-square" aria-hidden="true"></i> LinkedIn
           </a>
         </li>
       {% endif %}
@@ -127,14 +155,6 @@
         <li>
           <a href="https://bitbucket.org/{{ author.bitbucket }}" itemprop="sameAs">
             <i class="fa fa-fw fa-bitbucket" aria-hidden="true"></i> Bitbucket
-          </a>
-        </li>
-      {% endif %}
-
-      {% if author.github %}
-        <li>
-          <a href="https://github.com/{{ author.github }}" itemprop="sameAs">
-            <i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub
           </a>
         </li>
       {% endif %}

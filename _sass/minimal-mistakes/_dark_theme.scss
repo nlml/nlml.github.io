@@ -597,6 +597,74 @@ html[data-theme="dark"] {
         }
     }
 
+    /* Buttons in Dark Theme */
+    .btn {
+        color: #fff;
+
+        &--inverse {
+            background-color: #252a34;
+            color: #eaeaea;
+            border: 1px solid #383d47;
+
+            &:visited {
+                color: #eaeaea;
+            }
+
+            &:hover {
+                background-color: #313744;
+                color: #00adb5;
+                border-color: #00adb5;
+            }
+        }
+
+        &--primary {
+            background-color: #00adb5;
+            color: #fff;
+
+            &:visited {
+                color: #fff;
+            }
+
+            &:hover {
+                background-color: mix(#000, #00adb5, 20%);
+                color: #fff;
+            }
+        }
+
+        &--danger {
+            background-color: #e24a4a;
+            color: #fff;
+
+            &:visited {
+                color: #fff;
+            }
+
+            &:hover {
+                background-color: mix(#000, #e24a4a, 20%);
+                color: #fff;
+            }
+        }
+    }
+
+    /* Publication Teasers */
+    .page-publications .page__title {
+        border-bottom-color: #383d47;
+    }
+
+    .publication-entry {
+        border-bottom-color: #383d47;
+
+        &__thumb img {
+            border-color: #383d47;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+
+            &:hover {
+                border-color: #00adb5;
+                box-shadow: 0 4px 16px rgba(0, 173, 181, 0.25);
+            }
+        }
+    }
+
     /* Footer */
     .page__footer {
         background-color: #1a1d24;

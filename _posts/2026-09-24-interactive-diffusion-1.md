@@ -87,7 +87,7 @@ Enter **factorised spatiotemporal attention** -- each DiT block consists of:
 2. Temporal attention: tokens *at identical spatial locations across time* attend to each other.
 3. A standard feedforward MLP layer.
 
-![Pixel-space Diffusion Transformer architecture with factorised spatiotemporal attention](/images/interactive-diffusion-1/interactive-diffusion-dit.svg)
+![Pixel-space Diffusion Transformer architecture with factorised spatiotemporal attention](/images/interactive-diffusion-1/interactive-diffusion-dit.png)
 <div style="text-align: center; font-style: italic; margin-top: -0.5em; margin-bottom: 1.5em; color: #777;">
 Our pixel-space DiT architecture with factorised spatiotemporal attention.
 </div>
